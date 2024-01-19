@@ -30,6 +30,23 @@ app.post('/signup', (req, res) => {
         //return res.json(data);
     })
 })
+app.post('/login', (req, res) => {
+    const sql = "SELECT * FROM users WHERE email = ? AND password = ?"
+    
+    db.query(sql, [req.body.email, req.body.password ], (err, data) => {
+        if(err){
+            console.error(err);
+            return res.status(500).json({ error: err.message });
+            //return res.json("Error");
+        }
+        if(data.length > 0){
+            return res.json("Success");
+        } else {
+            return res.json("Fail");
+        }
+        
+    })
+})
 
 app.listen(8081, ()=> {
     console.log("listening")
