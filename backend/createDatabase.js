@@ -29,7 +29,9 @@ connection.connect((err) => {
           id INT AUTO_INCREMENT PRIMARY KEY,
           username VARCHAR(255) NOT NULL,
           email VARCHAR(255) NOT NULL,
-          password VARCHAR(255) NOT NULL
+          password VARCHAR(255) NOT NULL,
+          current_team_pick INT,
+          winning_streak INT DEFAULT 0
         )`;
       connection.query(createUsersTableQuery, (err, results) => {
         if (err) throw err;
