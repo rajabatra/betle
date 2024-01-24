@@ -1,21 +1,35 @@
-import React, {useState} from 'react' 
+import React, {useState, useEffect} from 'react' 
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import Validation from './LoginValidation';
 import axios from 'axios'
 
+
 function Login({ setIsLoggedIn }) {
+        
         const [values, setValues] = useState({
             email: '',
             password: ''
         })
+        const navigate = useNavigate()
+        const [errors, setErrors] = useState({})
+        useEffect(() => {
+            // Check if user is already logged in
+            const token = localStorage.getItem('authToken');
+            if (token) {
+                setIsLoggedIn(true);
+                navigate('/home');
+            }
+        }, [setIsLoggedIn, navigate]);
+
         const handleInput = event => {
             setValues(prev => ({ ...prev, [event.target.name]: event.target.value }));
         };
-        const navigate = useNavigate()
-        const [errors, setErrors] = useState({})
+        
+
         const handleSubmit = event => {
             event.preventDefault();
             const err = Validation(values);
+            
             setErrors(err);
         
             if (err.email === "" && err.password === "") {
@@ -23,6 +37,7 @@ function Login({ setIsLoggedIn }) {
                     .then(res => {
                         if (res.data.success) {
                             setIsLoggedIn(true);  // Set login state
+                            localStorage.setItem('authToken', res.data.token);
                             navigate('/home', { state: { username: res.data.user.username, id: res.data.user.id } }); 
                         } else {
                             alert("No record exists");

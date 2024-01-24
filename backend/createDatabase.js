@@ -2,9 +2,9 @@ const mysql = require('mysql2');
 
 // Create a connection to the database
 const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root', // replace with your MySQL username
-  password: '', // replace with your MySQL password
+  host: 'g84t6zfpijzwx08q.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
+  user: 'ajezug5c2jtz5d4z', // replace with your MySQL username
+  password: 'n34zb61zk2yfdhlm', // replace with your MySQL password
 });
 
 connection.connect((err) => {
@@ -14,13 +14,13 @@ connection.connect((err) => {
   console.log('Connected to the MySQL server.');
 
   // Create the 'signup' database
-  const createDatabaseQuery = `CREATE DATABASE IF NOT EXISTS signup`;
+  const createDatabaseQuery = `CREATE DATABASE IF NOT EXISTS c1gr4bjdqxa06vz0`;
   connection.query(createDatabaseQuery, (err, results) => {
     if (err) throw err;
-    console.log("Database 'signup' created or already exists.");
+    console.log("Database 'c1gr4bjdqxa06vz0' created or already exists.");
     
     // Use the 'signup' database
-    connection.changeUser({database : 'signup'}, (err) => {
+    connection.changeUser({database : 'c1gr4bjdqxa06vz0'}, (err) => {
       if (err) throw err;
 
       // Create the 'users' table
