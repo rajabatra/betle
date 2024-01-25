@@ -1,6 +1,8 @@
 const express = require("express");
+const schedule = require('node-schedule');
 const mysql = require("mysql2")
 const cors = require("cors");
+const resetTeamPicks = require('./resetTeamPicks');
 
 const app = express();
 app.use(cors());
@@ -40,7 +42,7 @@ const jwt = require('jsonwebtoken');
 const JWT_SECRET = 'your-very-secure-and-secret-key';
 
 app.post('/login', (req, res) => {
-    const sql = "SELECT id, username FROM users WHERE email = ? AND password = ?";
+    const sql = "SELECT id, username, winning_streak, current_team_pick  FROM users WHERE email = ? AND password = ?";
 
     db.query(sql, [req.body.email, req.body.password], (err, data) => {
         if (err) {
@@ -75,8 +77,8 @@ const authenticateToken = (req, res, next) => {
 // Route to get user data
 app.get('/getUserData', authenticateToken, (req, res) => {
     const userId = req.user.id;
-    const sql = "SELECT username, winning_streak FROM users WHERE id = ?";
-    console.log(userId)
+    const sql = "SELECT username, winning_streak, current_team_pick FROM users WHERE id = ?";
+ 
     db.query(sql, [userId], (err, data) => {
         if (err) {
             return res.status(500).json({ error: err.message });
@@ -89,6 +91,28 @@ app.get('/getUserData', authenticateToken, (req, res) => {
     });
 });
 
+app.post('/updateTeamPick', authenticateToken, (req, res) => {
+    const userId = req.user.id;
+    const teamPick = req.body.teamPick;
+
+    const sql = "UPDATE users SET current_team_pick = ? WHERE id = ?";
+    db.query(sql, [teamPick, userId], (err, result) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        return res.json({ success: true, message: 'Team pick updated successfully' });
+    });
+});
+
+const rule = new schedule.RecurrenceRule();
+rule.hour = 6;
+rule.minute = 23;
+rule.tz = 'Etc/UTC';
+
+schedule.scheduleJob(rule, function(){
+    console.log('Scheduled reset of team picks every 2 minutes.');
+    resetTeamPicks();
+  });
 
 app.listen(8081, ()=> {
     console.log("listening")
