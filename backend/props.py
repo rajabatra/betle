@@ -33,9 +33,8 @@ def checkGames(league_url, date):
 # url = "https://v3.football.api-sports.io/leagues"
 
 def generateGame():
-    #tmrwDate = datetime.now() + timedelta(2)
-    #gameDate = tmrwDate.strftime('%Y-%m-%d')
-    gameDate = '2023-07-26'
+    tmrwDate = datetime.now() + timedelta(2)
+    gameDate = tmrwDate.strftime('%Y-%m-%d')
     i = 0
     leagueChoice = leagues[i]
     while checkGames(leagueChoice, gameDate) == False:
