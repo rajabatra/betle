@@ -3,12 +3,21 @@ const schedule = require('node-schedule');
 const mysql = require("mysql2")
 const cors = require("cors");
 const resetTeamPicks = require('./resetTeamPicks');
+const { generateAndInsertGame } = require('./scraper');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-const db = mysql.createConnection({
+// const db = mysql.createConnection({
+//     host: "your_host",
+//     user: "your_user",
+//     password: "your_password",
+//     database: "your_database",
+//     connectionLimit: 10 // You can set the limit based on your needs
+// });
+
+const db = mysql.createPool({
     host: "g84t6zfpijzwx08q.cbetxkdyhwsb.us-east-1.rds.amazonaws.com",
     user: "ajezug5c2jtz5d4z",
     password: "n34zb61zk2yfdhlm",
@@ -51,7 +60,7 @@ app.post('/login', (req, res) => {
         if (data.length > 0) {
             // Successfully logged in
             const user = data[0];
-            const token = jwt.sign({ id: user.id, username: user.username }, JWT_SECRET, { expiresIn: '2h' });
+            const token = jwt.sign({ id: user.id, username: user.username }, JWT_SECRET);
 
             return res.json({ success: true, token: token, user: data[0]});
             //return res.json({ success: true, user: data[0] });
@@ -61,6 +70,8 @@ app.post('/login', (req, res) => {
         }
     })
 })
+
+
 
 // Authentication Middleware
 const authenticateToken = (req, res, next) => {
@@ -104,15 +115,33 @@ app.post('/updateTeamPick', authenticateToken, (req, res) => {
     });
 });
 
+//schedule for updating the reset picks
 const rule = new schedule.RecurrenceRule();
-rule.hour = 6;
-rule.minute = 23;
+rule.hour = 8;
+rule.minute = 0;
 rule.tz = 'Etc/UTC';
 
 schedule.scheduleJob(rule, function(){
-    console.log('Scheduled reset of team picks every 2 minutes.');
+    console.log('Scheduled reset of team picks');
     resetTeamPicks();
   });
+
+//schedule for calling the scraper
+const rule2 = new schedule.RecurrenceRule();
+rule2.hour = 6;
+rule2.minute = 8;
+rule2.tz = 'Etc/UTC';
+
+schedule.scheduleJob(rule2, async function(){
+    console.log('Scheduled task to generate and insert game');
+    try {
+        await generateAndInsertGame();
+    } catch (error) {
+        console.error('Error in scheduled task:', error);
+    }
+  });
+
+
 
 app.listen(8081, ()=> {
     console.log("listening")

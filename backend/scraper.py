@@ -6,25 +6,17 @@ import random
 import json
 import pytz
 import sqlite3
-import mysql.connector
-from mysql.connector import Error
 
-# Database connection parameters
-host = "your_host"
-database = "your_database"
-user = "your_username"
-password = "your_password"
+
 
 leagues = ['https://v1.american-football.api-sports.io',
            'https://v2.nba.api-sports.io',
            'https://v1.baseball.api-sports.io',
             'https://v3.football.api-sports.io']
 
-def getLeague():
-    return leagues[random.randint(0,4)]
 
-# print(getLeague())
 def checkGames(league_url, date):
+   
     url = ""
     if league_url == 'https://v3.football.api-sports.io':
         url = league_url+'/fixtures?date='+date
@@ -35,29 +27,36 @@ def checkGames(league_url, date):
     'x-rapidapi-key': 'a77cce330b5d21ba94ad6b1e642cb8bf',
     'x-rapidapi-host': league_url
     }
-    response = requests.request("GET", url, headers=headers, data=payload)
-    print('tested' + league_url)
-    return response.json()["results"] != 0
     
-# print(checkGames('https://v2.nba.api-sports.io', '2024-01-24'))
-# url = "https://v3.football.api-sports.io/leagues"
-
-def convert_to_pst(utc_date_str):
-    utc_zone = pytz.timezone('UTC')
-    pst_zone = pytz.timezone('America/Los_Angeles')
-    utc_datetime = utc_zone.localize(datetime.strptime(utc_date_str, '%Y-%m-%d %H:%M'))
-    pst_datetime = utc_datetime.astimezone(pst_zone)
-    return pst_datetime.strftime('%Y-%m-%d %H:%M')
+    response = requests.request("GET", url, headers=headers, data=payload)
+    response_json = response.json()['response']
+    if league_url == "https://v1.american-football.api-sports.io":
+        #game_choices_json = [x for x in response_json if int(x['game']['date']['time'][1]) <= 4]
+        game_choices_json = [x for x in response_json if int(x['game']['date']['time'].split(':')[0]) <= 4]
+    if league_url == "https://v2.nba.api-sports.io":
+        game_choices_json = [x for x in response_json if int(x['date']['start'][11:13]) <= 4]
+    if league_url == "https://v1.baseball.api-sports.io":
+        game_choices_json = [game for game in response_json if game['time'] < "04:00"]
+    if league_url == "https://v3.football.api-sports.io":
+        game_choices_json = [x for x in response_json if int(x['fixture']['date'][11:13]) <= 4]
+    #print(response_json)
+    print('tested' + league_url)
+    #print(game_choices_json)
+    return len(game_choices_json) > 0
+    #return response.json()["results"] != 0
+    
 
 def generateGame():
-    tmrwDate = datetime.now() + timedelta(2)
+    tmrwDate = datetime.now() + timedelta(3)
     gameDate = tmrwDate.strftime('%Y-%m-%d')
+    
     i = 0
     leagueChoice = leagues[i]
     while checkGames(leagueChoice, gameDate) == False:
         i = i+1
         leagueChoice = leagues[i]
     url = ""
+    
     if leagueChoice == 'https://v3.football.api-sports.io':
         url = leagueChoice+'/fixtures?date='+gameDate
     else:
@@ -69,22 +68,21 @@ def generateGame():
     }
     response = requests.request("GET", url, headers=headers, data=payload)
     response_json = response.json()['response']
-    #print(response_json[0]['date']['start'][12])
+    
     game_choices_json = []
     if leagueChoice == "https://v1.american-football.api-sports.io":
-        game_choices_json = [x for x in response_json if int(x['game']['date']['time'][1]) <= 4]
-        #game_choices_json = [x for x in response_json if int(x['game']['date']['time'].split(':')[0]) <= 4]
+        game_choices_json = [x for x in response_json if int(x['game']['date']['time'].split(':')[0]) <= 4]
     if leagueChoice == "https://v2.nba.api-sports.io":
-        game_choices_json = [x for x in response_json if int(x['date']['start'][12]) <= 4]
+        game_choices_json = [x for x in response_json if int(x['date']['start'][11:13]) <= 4]
     if leagueChoice == "https://v1.baseball.api-sports.io":
-        game_choices_json = [x for x in response_json if int(x['time'][1]) <= 4]
+        game_choices_json = [x for x in response_json if x['time'] < "04:00"]
     if leagueChoice == "https://v3.football.api-sports.io":
-        game_choices_json = [x for x in response_json if int(x['fixture']['date'][12]) <= 4]
+        game_choices_json = [x for x in response_json if int(x['fixture']['date'][11:13]) <= 4]
+
     game_json = game_choices_json[random.randint(0,len(game_choices_json)-1)]
-    #print(game_json)
+
     game_json = game_choices_json[random.randint(0,len(game_choices_json)-1)]
-    #print(game_json)
-    #print(leagueChoice)
+    
     # Extract game information
     #for football
     game_info ={}
@@ -92,26 +90,79 @@ def generateGame():
         game_info = {
             'id': game_json['game']['id'],
             'date': game_json['game']['date']['date'],
+            'time': game_json['game']['date']['time'],
             'home_team': game_json['teams']['home']['name'],
-            'away_team': game_json['teams']['away']['name']
+            'away_team': game_json['teams']['away']['name'],
+            'home_logo': game_json['teams']['home']['logo'],
+            'away_logo': game_json['teams']['away']['logo'],
+            'league': leagueChoice
         }
     ##for nba 
     elif leagueChoice == leagues[1]:
         game_info = {
             'id': game_json['id'],
-            'date': game_json['date']['start'],
+            'date': game_json['date']['start'].split('T')[0],
+            'time': ':'.join(game_json['date']['start'].split('T')[1].split(':')[0:2]),
+            'home_logo': game_json['teams']['home']['logo'],
+            'away_logo': game_json['teams']['visitors']['logo'],
             'home_team': game_json['teams']['home']['name'],
-            'away_team': game_json['teams']['visitors']['name']
+            'away_team': game_json['teams']['visitors']['name'],
+            'league': leagueChoice
+        }
+    elif leagueChoice == leagues[2]:
+        game_info = {
+            'id': game_json['id'],
+            'date': game_json['date'][:10],
+            'time': game_json['time'],
+            'home_team': game_json['teams']['home']['name'],
+            'away_team': game_json['teams']['away']['name'],
+            'home_logo': game_json['teams']['home']['logo'],
+            'away_logo': game_json['teams']['away']['logo'],
+            'league': leagueChoice
+        }
+    elif leagueChoice == leagues[3]:
+        game_info = {
+            'id': game_json['fixture']['id'],
+            'date': game_json['fixture']['date'][:10],
+            'time': game_json['fixture']['date'].split('T')[1][:5],
+            'home_team': game_json['fixture']['teams']['home']['name'],
+            'away_team': game_json['fixture']['teams']['away']['name'],
+            'home_logo': game_json['fixture']['teams']['home']['logo'],
+            'away_logo': game_json['fixture']['teams']['away']['logo'],
+            'league': leagueChoice
+
         }
 
 
 
 
-    # Convert date and time to PST
-    #datetime_utc = f"{game_info['date']} {game_info['time']}"
-    #datetime_pst = convert_to_pst(datetime_utc)
-    #game_info['datetime_pst'] = datetime_pst
-    #print
+ 
     return game_info
+
+def convert_utc_to_pst(game_info):
+    # Combining date and time into a single string
+    date_time_str = f"{game_info['date']} {game_info['time']}"
+
+    # Create a datetime object in UTC
+    utc_time = datetime.strptime(date_time_str, '%Y-%m-%d %H:%M')
+    utc_time = pytz.utc.localize(utc_time)
+
+    # Define the PST timezone
+    pst_zone = pytz.timezone('America/Los_Angeles')
+
+    # Convert to PST
+    pst_time = utc_time.astimezone(pst_zone)
+
+    # Update the dictionary
+    game_info['date'] = pst_time.strftime('%Y-%m-%d')
+    game_info['time'] = pst_time.strftime('%H:%M')
+
+    return game_info
+
 gamedict = generateGame()
-print(gamedict)
+converted_game = convert_utc_to_pst(gamedict)
+
+
+print(converted_game)
+
+

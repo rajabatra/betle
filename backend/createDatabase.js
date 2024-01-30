@@ -41,12 +41,17 @@ connection.connect((err) => {
         const createGamesTableQuery = `
           CREATE TABLE IF NOT EXISTS games (
             id INT AUTO_INCREMENT PRIMARY KEY,
+            gameid VARCHAR(255) NOT NULL,
             game_date DATE NOT NULL,
             sport VARCHAR(50) NOT NULL,
             team1 VARCHAR(255) NOT NULL,
             team2 VARCHAR(255) NOT NULL,
+            team1logo TEXT NOT NULL,
+            team2logo TEXT NOT NULL,
             game_time TIME NOT NULL,
             winner VARCHAR(255)
+
+
           )`;
         connection.query(createGamesTableQuery, (err, results) => {
           if (err) throw err;
