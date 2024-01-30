@@ -35,7 +35,28 @@ def checkGames(league_url, date):
     }
     response = requests.request("GET", url, headers=headers, data=payload)
     print('tested' + league_url)
-    return response.json()["results"] != 0
+    print(response.json())
+    response_json = response.json()
+    #print(response_json[0]['date']['start'][12])
+    game_choices_json = []
+    if response_json["results"] != 0:
+        if league_url == leagues[0]:
+            #game_choices_json = [x for x in response_json if int(x['game']['date']['time'][1]) <= 4]
+            game_choices_json = [x for x in response_json if int(x['response']['game']['date']['time'].split(':')[0]) <= 4]
+        elif league_url == leagues[1]:
+            #game_choices_json = [x for x in response_json if int(x['date']['start'][12]) <= 4]
+            game_choices_json = [x for x in response_json if int(x['response']['date']['start'].split('T')[1][:2]) <= 4]
+        elif league_url == leagues[2]:
+            #game_choices_json = [x for x in response_json if int(x['time'][1]) <= 4]
+            game_choices_json = [x for x in response_json if int(x['response']['time'].split(':')[0]) <= 4]
+        elif league_url == leagues[3]:
+            #game_choices_json = [x for x in response_json if int(x['fxture']['date'][12]) <= 4]
+            game_choices_json = [x for x in response_json if int(x['response']['fixture']['date'].split('T')[1][:2]) <= 4]
+        else:
+            game_choices_json = response_json
+    print(game_choices_json)
+    return True
+    ##return game_choices_json["results"] != 0
     
 # print(checkGames('https://v2.nba.api-sports.io', '2024-01-24'))
 # url = "https://v3.football.api-sports.io/leagues"
@@ -95,7 +116,9 @@ def generateGame():
             'date': game_json['game']['date']['date'],
             'time': game_json['game']['date']['time'],
             'home_team': game_json['teams']['home']['name'],
-            'away_team': game_json['teams']['away']['name']
+            'away_team': game_json['teams']['away']['name'],
+            'home_logo': game_json['teams']['home']['logo'],
+            'away_logo': game_json['teams']['away']['logo']
         }
     ##for nba 
     elif leagueChoice == leagues[1]:
@@ -104,7 +127,9 @@ def generateGame():
             'date': game_json['date']['start'][:10],
             'time': game_json['date']['start'].split('T')[1][:5],
             'home_team': game_json['teams']['home']['name'],
-            'away_team': game_json['teams']['visitors']['name']
+            'away_team': game_json['teams']['visitors']['name'],
+            'home_logo': game_json['teams']['home']['logo'],
+            'away_logo': game_json['teams']['visitors']['logo']
         }
     elif leagueChoice == leagues[2]:
         game_info = {
@@ -112,15 +137,19 @@ def generateGame():
             'date': game_json['date'][:10],
             'time': game_json['time'],
             'home_team': game_json['teams']['home']['name'],
-            'away_team': game_json['teams']['away']['name']
+            'away_team': game_json['teams']['away']['name'],
+            'home_logo': game_json['teams']['home']['logo'],
+            'away_logo': game_json['teams']['away']['logo']
         }
     elif leagueChoice == leagues[3]:
         game_info = {
             'id': game_json['fixture']['id'],
             'date': game_json['fixture']['date'][:10],
             'time': game_json['fixture']['date'].split('T')[1][:5],
-            'home_team': game_json['fixture']['teams']['home']['name'],
-            'away_team': game_json['fixture']['teams']['away']['name']
+            'home_team': game_json['fixture']['teams']['home']['logo'],
+            'away_team': game_json['fixture']['teams']['away']['logo'],
+            'home_logo': game_json['fixture']['teams']['home']['logo'],
+            'away_logo': game_json['fixture']['teams']['away']['logo']
         }
 
 
