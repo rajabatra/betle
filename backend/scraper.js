@@ -3,7 +3,7 @@ const fetch = require('node-fetch')
 const mysql = require("mysql2");
 
 
-const db = mysql.createConnection({
+const db = mysql.createPool({
     host: "g84t6zfpijzwx08q.cbetxkdyhwsb.us-east-1.rds.amazonaws.com",
     user: "ajezug5c2jtz5d4z",
     password: "n34zb61zk2yfdhlm",
@@ -21,111 +21,148 @@ const leagues = [
     'https://v3.football.api-sports.io'
 ];
 
-function getLeague() {
-    return leagues[Math.floor(Math.random() * leagues.length)];
-}
 
 async function checkGames(leagueUrl, date) {
-    let url = leagueUrl.includes('football') ?
-        `${leagueUrl}/fixtures?date=${date}` :
-        `${leagueUrl}/games?date=${date}`;
+    let url = leagueUrl.includes('https://v3.football.api-sports.io') 
+              ? `${leagueUrl}/fixtures?date=${date}` 
+              : `${leagueUrl}/games?date=${date}`;
 
     const headers = {
         'x-rapidapi-key': 'a77cce330b5d21ba94ad6b1e642cb8bf',
-        'x-rapidapi-host': leagueUrl
+        'x-rapidapi-host': leagueUrl.replace('https://', '')
     };
 
-    try {
-        const response = await fetch(url, { headers });
-        const data = await response.json();
-        console.log('tested ' + leagueUrl);
-        return data.results !== 0;
-    } catch (error) {
-        console.error(error);
-        return false;
+    const response = await fetch(url, { headers: headers });
+    const responseJson = await response.json();
+    let gameChoicesJson = [];
+
+    switch (leagueUrl) {
+        case 'https://v1.american-football.api-sports.io':
+            gameChoicesJson = responseJson.response.filter(x => parseInt(x.game.date.time.split(':')[0]) <= 4);
+            break;
+        case 'https://v2.nba.api-sports.io':
+            gameChoicesJson = responseJson.response.filter(x => parseInt(x.date.start.substring(11, 13)) <= 4);
+            break;
+        case 'https://v1.baseball.api-sports.io':
+            gameChoicesJson = responseJson.response.filter(game => game.time < "04:00");
+            break;
+        case 'https://v3.football.api-sports.io':
+            gameChoicesJson = responseJson.response.filter(x => parseInt(x.fixture.date.substring(11, 13)) <= 4);
+            break;
     }
+
+    console.log('tested ' + leagueUrl);
+    return gameChoicesJson.length > 0;
 }
 
-function convertToPST(utcDateString) {
-    // Note: This is a basic conversion. Consider using libraries like moment.js for more accurate conversions
-    const utcDate = new Date(utcDateString + ' UTC');
-    return new Date(utcDate.getTime() - (8 * 60 * 60 * 1000)).toISOString();
-}
+
 
 async function generateGame() {
-    const tomorrowDate = new Date();
-    tomorrowDate.setDate(tomorrowDate.getDate() + 2);
-    const gameDate = tomorrowDate.toISOString().split('T')[0];
+    const tmrwDate = new Date();
+    tmrwDate.setDate(tmrwDate.getDate() + 3);
+    const gameDate = tmrwDate.toISOString().split('T')[0];
+
     let i = 0;
     let leagueChoice = leagues[i];
-    let gameFound = await checkGames(leagueChoice, gameDate);
-
-    while (!gameFound && i < leagues.length) {
+    while (!(await checkGames(leagueChoice, gameDate)) && i < leagues.length - 1) {
         i++;
         leagueChoice = leagues[i];
-        gameFound = await checkGames(leagueChoice, gameDate);
     }
 
-    if (!gameFound) {
-        console.log('No games found');
-        return;
-    }
-
-    // Construct the URL
-    let url = leagueChoice.includes('football') ?
-        `${leagueChoice}/fixtures?date=${gameDate}` :
-        `${leagueChoice}/games?date=${gameDate}`;
+    let url = leagueChoice.includes('https://v3.football.api-sports.io') 
+              ? `${leagueChoice}/fixtures?date=${gameDate}` 
+              : `${leagueChoice}/games?date=${gameDate}`;
 
     const headers = {
         'x-rapidapi-key': 'a77cce330b5d21ba94ad6b1e642cb8bf',
-        'x-rapidapi-host': leagueChoice
+        'x-rapidapi-host': leagueChoice.replace('https://', '')
     };
 
-    try {
-        const response = await fetch(url, { headers });
-        const data = await response.json();
-        const responseJson = data.response;
+    const response = await fetch(url, { headers: headers });
+    const responseJson = await response.json();
+    let gameChoicesJson = [];
 
-        let gameChoicesJson = [];
-        if (leagueChoice === 'https://v1.american-football.api-sports.io') {
-            gameChoicesJson = responseJson.filter(x => parseInt(x.game.date.time[1]) <= 4);
-        } else if (leagueChoice === 'https://v2.nba.api-sports.io') {
-            gameChoicesJson = responseJson.filter(x => parseInt(x.date.start[12]) <= 4);
-        } else if (leagueChoice === 'https://v1.baseball.api-sports.io') {
-            gameChoicesJson = responseJson.filter(x => parseInt(x.time[1]) <= 4);
-        } else if (leagueChoice === 'https://v3.football.api-sports.io') {
-            gameChoicesJson = responseJson.filter(x => parseInt(x.fixture.date[12]) <= 4);
-        }
+    switch (leagueChoice) {
+        case 'https://v1.american-football.api-sports.io':
+            gameChoicesJson = responseJson.response.filter(x => parseInt(x.game.date.time.split(':')[0]) <= 4);
+            break;
+        case 'https://v2.nba.api-sports.io':
+            gameChoicesJson = responseJson.response.filter(x => parseInt(x.date.start.substring(11, 13)) <= 4);
+            break;
+        case 'https://v1.baseball.api-sports.io':
+            gameChoicesJson = responseJson.response.filter(game => game.time < "04:00");
+            break;
+        case 'https://v3.football.api-sports.io':
+            gameChoicesJson = responseJson.response.filter(x => parseInt(x.fixture.date.substring(11, 13)) <= 4);
+            break;
+    }
 
-        if (gameChoicesJson.length === 0) {
-            console.log('No suitable games found');
-            return;
-        }
+    const gameJson = gameChoicesJson[Math.floor(Math.random() * gameChoicesJson.length)];
+    let gameInfo = {};
 
-        const gameJson = gameChoicesJson[Math.floor(Math.random() * gameChoicesJson.length)];
-
-        let gameInfo = {};
-        if (leagueChoice === 'https://v1.american-football.api-sports.io') {
+    switch (leagueChoice) {
+        case 'https://v1.american-football.api-sports.io':
             gameInfo = {
                 id: gameJson.game.id,
                 date: gameJson.game.date.date,
+                time: gameJson.game.date.time,
                 home_team: gameJson.teams.home.name,
-                away_team: gameJson.teams.away.name
+                away_team: gameJson.teams.away.name,
+                home_logo: gameJson.teams.home.logo,
+                away_logo: gameJson.teams.away.logo,
+                league: leagueChoice
             };
-        } else if (leagueChoice === 'https://v2.nba.api-sports.io') {
+            break;
+        case 'https://v2.nba.api-sports.io':
             gameInfo = {
                 id: gameJson.id,
-                date: gameJson.date.start,
+                date: gameJson.date.start.split('T')[0],
+                time: gameJson.date.start.split('T')[1].split(':').slice(0, 2).join(':'),
+                home_logo: gameJson.teams.home.logo,
+                away_logo: gameJson.teams.visitors.logo,
                 home_team: gameJson.teams.home.name,
-                away_team: gameJson.teams.visitors.name
+                away_team: gameJson.teams.visitors.name,
+                league: leagueChoice
             };
-        }
-        // ... handle other leagues ...
-
-        return gameInfo;
-    } catch (error) {
-        console.error(error);
+            break;
+        case 'https://v1.baseball.api-sports.io':
+            gameInfo = {
+                id: gameJson.id,
+                date: gameJson.date.substring(0, 10),
+                time: gameJson.time,
+                home_team: gameJson.teams.home.name,
+                away_team: gameJson.teams.away.name,
+                home_logo: gameJson.teams.home.logo,
+                away_logo: gameJson.teams.away.logo,
+                league: leagueChoice
+            };
+            break;
+        case 'https://v3.football.api-sports.io':
+            gameInfo = {
+                id: gameJson.fixture.id,
+                date: gameJson.fixture.date.substring(0, 10),
+                time: gameJson.fixture.date.split('T')[1].substring(0, 5),
+                home_team: gameJson.fixture.teams.home.name,
+                away_team: gameJson.fixture.teams.away.name,
+                home_logo: gameJson.fixture.teams.home.logo,
+                away_logo: gameJson.fixture.teams.away.logo,
+                league: leagueChoice
+            };
+            break;
     }
+
+    const convertedGame = convertUtcToPst(gameInfo);
+    return convertedGame;
+}
+function convertUtcToPst(gameInfo) {
+    // Assuming gameInfo.date and gameInfo.time are in UTC
+    const utcDate = new Date(`${gameInfo.date}T${gameInfo.time}Z`);
+    const pstDate = new Date(utcDate.getTime() - (8 * 60 * 60 * 1000)); // subtract 8 hours for PST
+
+    gameInfo.date = pstDate.toISOString().split('T')[0];
+    gameInfo.time = pstDate.toISOString().split('T')[1].substring(0, 5);
+
+    return gameInfo;
 }
 
 async function insertGameToDb(gameInfo) {
@@ -135,8 +172,8 @@ async function insertGameToDb(gameInfo) {
     }
     
     try {
-        const query = `INSERT INTO games (id, game_date, team1, team2, team1logo) VALUES (?, ?, ?, ?, ?)`;
-        const values = [gameInfo.id, gameInfo.date, gameInfo.home_team, gameInfo.away_team, gameInfo.away_team];
+        const query = `INSERT INTO games (gameid, game_date, team1, team2, team1logo, team2logo, game_time, sport) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+        const values = [gameInfo.id, gameInfo.date, gameInfo.home_team, gameInfo.away_team, gameInfo.home_logo, gameInfo.away_logo, gameInfo.time, gameInfo.league];
         await db.execute(query, values);
         console.log('Game info inserted into database successfully');
     } catch (error) {

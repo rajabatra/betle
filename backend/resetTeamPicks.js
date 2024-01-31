@@ -1,7 +1,7 @@
 const mysql = require("mysql2");
 
 // Database connection configuration
-const db = mysql.createConnection({
+const db = mysql.createPool({
     host: "g84t6zfpijzwx08q.cbetxkdyhwsb.us-east-1.rds.amazonaws.com",
     user: "ajezug5c2jtz5d4z",
     password: "n34zb61zk2yfdhlm",

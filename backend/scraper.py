@@ -136,8 +136,8 @@ def generateGame():
 
 
 
- 
-    return game_info
+    converted_game = convert_utc_to_pst(game_info)
+    return converted_game
 
 def convert_utc_to_pst(game_info):
     # Combining date and time into a single string
@@ -160,9 +160,9 @@ def convert_utc_to_pst(game_info):
     return game_info
 
 gamedict = generateGame()
-converted_game = convert_utc_to_pst(gamedict)
 
 
-print(converted_game)
+
+print(gamedict)
 
 

@@ -1,3 +1,5 @@
+//we will need pm2 to keep server running if it dies
+
 const express = require("express");
 const schedule = require('node-schedule');
 const mysql = require("mysql2")
@@ -128,8 +130,8 @@ schedule.scheduleJob(rule, function(){
 
 //schedule for calling the scraper
 const rule2 = new schedule.RecurrenceRule();
-rule2.hour = 6;
-rule2.minute = 8;
+rule2.hour = 4;
+rule2.minute = 1;
 rule2.tz = 'Etc/UTC';
 
 schedule.scheduleJob(rule2, async function(){
