@@ -1,0 +1,39 @@
+name: betle
+services:
+  frontend:
+    build:
+      context: ../frontend
+    networks:
+      - client-side
+    ports:
+      - 3000:3000
+
+  backend:
+    build:
+      context: ../backend
+    environment:
+      - LOCAL_DB=true
+      - DB_PASS=mysqlrootpass
+      - DB_NAME=betledb
+    networks:
+      - client-side
+      - server-side
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=mysqlrootpass
+      - MYSQL_DATABASE=betledb
+    volumes:
+      - db-data:/var/lib/mysql
+    ports:
+      - 3306:3306
+
+networks:
+  client-side: {}
+  server-side: {}
+volumes:
+  db-data: {}
