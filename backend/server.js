@@ -4,7 +4,7 @@ const express = require("express");
 const schedule = require('node-schedule');
 const mysql = require("mysql2")
 const cors = require("cors");
-const resetTeamPicks = require('./resetTeamPicks');
+const {updatePicksAndStreaks } = require('./resetTeamPicks');
 const { generateAndInsertGame } = require('./scraper');
 
 const app = express();
@@ -119,19 +119,19 @@ app.post('/updateTeamPick', authenticateToken, (req, res) => {
 
 //schedule for updating the reset picks
 const rule = new schedule.RecurrenceRule();
-rule.hour = 8;
-rule.minute = 0;
+rule.hour = 9;
+rule.minute = 10;
 rule.tz = 'Etc/UTC';
 
-schedule.scheduleJob(rule, function(){
+schedule.scheduleJob(rule, async function(){
     console.log('Scheduled reset of team picks');
-    resetTeamPicks();
+    updatePicksAndStreaks();
   });
 
 //schedule for calling the scraper
 const rule2 = new schedule.RecurrenceRule();
-rule2.hour = 4;
-rule2.minute = 1;
+rule2.hour = 9;
+rule2.minute = 0;
 rule2.tz = 'Etc/UTC';
 
 schedule.scheduleJob(rule2, async function(){
@@ -142,6 +142,23 @@ schedule.scheduleJob(rule2, async function(){
         console.error('Error in scheduled task:', error);
     }
   });
+
+  //endpoint to get leaderboard from Json
+
+  app.get('/getTopUsers', (req, res) => {
+    const fs = require('fs');
+
+    fs.readFile('topUsers.json', 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error reading the top users file:', err);
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+        return res.json({ success: true, topUsers: JSON.parse(data) });
+    });
+    
+});
+
+  
 
 
 

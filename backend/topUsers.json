@@ -1,0 +1,12 @@
+[
+  {
+    "id": 1,
+    "username": "test",
+    "winning_streak": 0
+  },
+  {
+    "id": 2,
+    "username": "raja",
+    "winning_streak": 0
+  }
+]

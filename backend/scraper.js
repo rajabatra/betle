@@ -1,7 +1,7 @@
 //import fetch from 'node-fetch';
 const fetch = require('node-fetch')
 const mysql = require("mysql2");
-
+const { checkWinner } = require('./winner');
 
 const db = mysql.createPool({
     host: "g84t6zfpijzwx08q.cbetxkdyhwsb.us-east-1.rds.amazonaws.com",
@@ -189,6 +189,39 @@ async function generateAndInsertGame() {
         await insertGameToDb(gameInfo);
     } else {
         console.log('No game generated');
+    }
+    await checkAndUpdateWinner().catch(console.error);
+}
+
+
+//Check for winner from yesterday's game
+function getYesterdaysDate() {
+    const date = new Date();
+    date.setDate(date.getDate() - 1);
+    return date.toISOString().split('T')[0];
+}
+
+// Function to update the winner in the database
+async function updateWinnerInDB(gameId, winner) {
+    const query = 'UPDATE games SET winner = ? WHERE gameid = ?';
+    const [rows] = await db.promise().query(query, [winner, gameId]);
+    return rows.affectedRows;
+}
+async function checkAndUpdateWinner() {
+    
+    const yesterdaysDate = getYesterdaysDate();
+    console.log(yesterdaysDate)
+    // Replace 'dateColumn' with the actual column name that stores the date in your games table
+    const query = 'SELECT gameid, sport FROM games WHERE game_date = ?';
+    const [games] = await db.promise().query(query, [yesterdaysDate]);
+    console.log(games)
+    for (const game of games) {
+        const leagueUrl = leagues.find(url => url.includes(game.sport));
+        if (leagueUrl) {
+            const winner = await checkWinner(leagueUrl, game.gameid);
+            await updateWinnerInDB(game.gameid, winner);
+            console.log(`Updated winner for game ID ${game.gameid}: ${winner}`);
+        }
     }
 }
 
