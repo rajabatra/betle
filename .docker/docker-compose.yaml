@@ -3,6 +3,7 @@ services:
   frontend:
     build:
       context: ../frontend
+      target: deployment
     networks:
       - client-side
     ports:
@@ -20,6 +21,8 @@ services:
       - server-side
     depends_on:
       - db
+    ports:
+      - 8080:8081
 
   db:
     image: mysql:8
@@ -31,6 +34,40 @@ services:
       - db-data:/var/lib/mysql
     ports:
       - 3306:3306
+
+  backend-dev:
+    build:
+      context: ../backend
+    command: npm start
+    develop:
+      watch:
+        - action: sync
+          path: ../backend
+    environment:
+      - LOCAL_DB=true
+      - DB_PASS=mysqlrootpass
+      - DB_NAME=betledb
+    networks:
+      - client-side
+      - server-side
+    depends_on:
+      - db
+    ports:
+      - 8080:8081
+
+  frontend-dev:
+    build:
+      context: ../frontend
+      target: build
+    develop:
+      watch:
+        - action: sync
+          path: ../frontend/
+    networks:
+      - client-side
+    ports:
+      - 3000:3000
+    command: npm start
 
 networks:
   client-side: {}
