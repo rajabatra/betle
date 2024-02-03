@@ -1,0 +1,67 @@
+version: '3'
+services:
+  api-server:
+    image: node:latest
+    working_dir: /app
+    volumes:
+      - .:/app
+    ports:
+      - "8081:8081"
+    command: >
+      sh -c "npm install && 
+             npm install -g pm2 &&
+             pm2-runtime start ecosystem.config.js"
+    environment:
+      NODE_ENV: production
+      DB_HOST: g84t6zfpijzwx08q.cbetxkdyhwsb.us-east-1.rds.amazonaws.com
+      DB_USER: ajezug5c2jtz5d4z
+      DB_PASSWORD: n34zb61zk2yfdhlm
+      DB_DATABASE: c1gr4bjdqxa06vz0
+      JWT_SECRET: your-very-secure-and-secret-key
+
+ecosystem.config.js:
+  apps:
+    - script: './app.js'
+      name: 'API-Server'
+      exec_mode: 'cluster'
+      instances: 'max'
+      autorestart: true
+      watch: true
+      env:
+        NODE_ENV: production
+
+# Database Configuration
+database:
+  type: mysql
+  host: ${DB_HOST}
+  user: ${DB_USER}
+  password: ${DB_PASSWORD}
+  database: ${DB_DATABASE}
+  connectionLimit: 10
+
+# API Routes
+routes:
+  - method: POST
+    path: /signup
+    description: Register a new user
+  - method: POST
+    path: /login
+    description: Authenticate user and return JWT
+  - method: GET
+    path: /getUserData
+    description: Get user data for authenticated user
+  - method: POST
+    path: /updateTeamPick
+    description: Update the current team pick for authenticated user
+  - method: GET
+    path: /getTopUsers
+    description: Retrieve leaderboard from JSON file
+
+# Scheduled Tasks
+scheduledTasks:
+  - description: Reset team picks and streaks
+    schedule: '0 5 9 * * *'
+    timezone: 'Etc/UTC'
+  - description: Call scraper to generate and insert game
+    schedule: '0 0 9 * * *'
+    timezone: 'Etc/UTC'

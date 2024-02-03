@@ -120,7 +120,7 @@ app.post('/updateTeamPick', authenticateToken, (req, res) => {
 //schedule for updating the reset picks
 const rule = new schedule.RecurrenceRule();
 rule.hour = 9;
-rule.minute = 10;
+rule.minute = 5;
 rule.tz = 'Etc/UTC';
 
 schedule.scheduleJob(rule, async function(){
