@@ -1,19 +1,13 @@
-name: betl
+name: betl-dev
 services:
-  frontend:
-    build:
-      context: ../frontend
-      target: deployment
-    networks:
-      - client-side
-    ports:
-      - 3000:3000
-    depends_on:
-      - backend
-
   backend:
     build:
       context: ../backend
+    command: npm start
+    develop:
+      watch:
+        - action: sync
+          path: ../backend
     environment:
       - LOCAL_DB=true
       - DB_PASS=mysqlrootpass
@@ -25,6 +19,22 @@ services:
       - db
     ports:
       - 8081:8081
+
+  frontend:
+    build:
+      context: ../frontend
+      target: build
+    develop:
+      watch:
+        - action: sync
+          path: ../frontend/
+    networks:
+      - client-side
+    ports:
+      - 3000:3000
+    command: npm start
+    depends_on:
+      - backend
 
   db:
     image: mysql:8

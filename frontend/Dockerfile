@@ -5,7 +5,7 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-FROM node:lts-alpine as depolyment
+FROM node:lts-alpine as deployment
 WORKDIR /usr/src/app
 COPY --from=build /usr/src/app/package.json ./
 COPY --from=build /usr/src/app/node_modules ./node_modules
