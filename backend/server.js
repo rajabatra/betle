@@ -6,15 +6,18 @@ const mysql = require("mysql2");
 const cors = require("cors");
 const { updatePicksAndStreaks } = require("./resetTeamPicks");
 const { generateAndInsertGame } = require("./scraper");
-
+// RESOURCES
+// express app
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// for local deployments
+// database
 const db = process.env.LOCAL_DB
   ? mysql.createPool({
-    host: "server-side",
+    host: "db",
+    ssl: false,
+    user: "root",
     password: process.env.DB_PASS,
     database: process.env.DB_NAME,
   })
@@ -25,6 +28,36 @@ const db = process.env.LOCAL_DB
     database: "c1gr4bjdqxa06vz0",
   });
 
+// SETUP
+// create database schema
+const { setupDB } = require("./createDatabase");
+setupDB(db);
+
+//schedule for updating the reset picks
+const rule = new schedule.RecurrenceRule();
+rule.hour = 9;
+rule.minute = 10;
+rule.tz = "Etc/UTC";
+schedule.scheduleJob(rule, async function () {
+  console.log("Scheduled reset of team picks");
+  updatePicksAndStreaks();
+});
+
+//schedule for calling the scraper
+const rule2 = new schedule.RecurrenceRule();
+rule2.hour = 9;
+rule2.minute = 0;
+rule2.tz = "Etc/UTC";
+schedule.scheduleJob(rule2, async function () {
+  console.log("Scheduled task to generate and insert game");
+  try {
+    await generateAndInsertGame();
+  } catch (error) {
+    console.error("Error in scheduled task:", error);
+  }
+});
+
+// ROUTES
 app.post("/signup", (req, res) => {
   const checkEmailSql = "SELECT * FROM users WHERE email = ?";
   const insertSql = "INSERT INTO users (username, email, password) VALUES (?)";
@@ -51,7 +84,6 @@ app.post("/signup", (req, res) => {
 });
 
 const jwt = require("jsonwebtoken");
-const { env } = require("process");
 const JWT_SECRET = "your-very-secure-and-secret-key";
 
 app.post("/login", (req, res) => {
@@ -231,6 +263,15 @@ app.get("/", (req, res) => {
   res.json({ success: true });
 });
 
-app.listen(8081, () => {
+server = app.listen(8081, () => {
   console.log("listening");
 });
+
+function gracefulShutdown() {
+  console.log("Shutting down betl backend gracefully...");
+  server.close();
+  process.exit(0);
+}
+
+process.on("SIGTERM", gracefulShutdown);
+process.on("SIGINT", gracefulShutdown);
