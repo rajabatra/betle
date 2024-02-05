@@ -9,6 +9,7 @@ const db = process.env.LOCAL_DB
       host: "server-side",
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
+      user: "root",
     })
   : mysql.createPool({
       host: "g84t6zfpijzwx08q.cbetxkdyhwsb.us-east-1.rds.amazonaws.com",

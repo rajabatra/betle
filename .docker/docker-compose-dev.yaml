@@ -3,10 +3,9 @@ services:
   backend:
     build:
       context: ../backend
-    command: npx nodemon server
     develop:
       watch:
-        - action: sync
+        - action: sync+restart
           path: ../backend/
           target: /usr/src/app/
     environment:
@@ -17,7 +16,8 @@ services:
       - client-side
       - server-side
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     ports:
       - 8081:8081
 
@@ -25,7 +25,7 @@ services:
     build:
       context: ../frontend
       target: build
-    command: npm start
+    command: ["node", "node_modules/react-scripts/scripts/start.js"]
     develop:
       watch:
         - action: sync
@@ -48,9 +48,12 @@ services:
       - db-data:/var/lib/mysql
     ports:
       - 3306:3306
+    networks:
+      - server-side
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      timeout: 20s
+      interval: 4s
+      timeout: 10s
       retries: 10
 
 networks:

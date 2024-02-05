@@ -11,4 +11,4 @@ COPY --from=build /usr/src/app/package.json ./
 COPY --from=build /usr/src/app/node_modules ./node_modules
 COPY --from=build /usr/src/app/build ./build
 
-CMD ["npx", "serve", "-s", "build"]
+CMD ["node", "node_modules/.bin/serve", "-s", "build"]
