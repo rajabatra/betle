@@ -44,6 +44,7 @@ const updatePicksAndStreaks = async () => {
             // Resetting team picks
             await resetTeamPicks();
             await writeTopUsersToJson();
+            await writeGameToJson();
         } else {
             console.log("No game results found for yesterday");
         }
@@ -79,6 +80,34 @@ const writeTopUsersToJson = async () => {
         console.log('Top users written to JSON file successfully');
     } catch (err) {
         console.error("Error in writeTopUsersToJson: ", err.message);
+    }
+};
+
+//write today's game to Json
+const writeGameToJson = async () => {
+    try {
+        // Get today's date in 'YYYY-MM-DD' format
+        const today = new Date().toISOString().split('T')[0];
+
+        const getGameSql = `
+            SELECT team1, team2, team1logo, team2logo, game_time
+            FROM games
+            WHERE DATE(game_date) = ?
+            LIMIT 1
+        `;
+
+        // Assuming `db.query` can handle parameterized queries
+        const [gameForToday] = await db.query(getGameSql, [today]);
+
+        // Check if a game was found
+        if (gameForToday.length) {
+            await fs.writeFile('gameForToday.json', JSON.stringify(gameForToday[0], null, 2));
+            console.log('Game for today written to JSON file successfully');
+        } else {
+            console.log('No games for today');
+        }
+    } catch (err) {
+        console.error("Error in writeGameToJson: ", err.message);
     }
 };
 

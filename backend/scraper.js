@@ -1,6 +1,7 @@
 //import fetch from 'node-fetch';
 const fetch = require('node-fetch')
 const mysql = require("mysql2");
+const fs = require('fs');
 const { checkWinner } = require('./winner');
 
 const db = mysql.createPool({
@@ -21,6 +22,17 @@ const leagues = [
     'https://v3.football.api-sports.io'
 ];
 
+
+//this is the main function
+async function generateAndInsertGame() {
+    const gameInfo = await generateGame();
+    if (gameInfo) {
+        await insertGameToDb(gameInfo);
+    } else {
+        console.log('No game generated');
+    }
+    
+}
 
 async function checkGames(leagueUrl, date) {
     let url = leagueUrl.includes('https://v3.football.api-sports.io') 
@@ -183,15 +195,6 @@ async function insertGameToDb(gameInfo) {
 }
 
 
-async function generateAndInsertGame() {
-    const gameInfo = await generateGame();
-    if (gameInfo) {
-        await insertGameToDb(gameInfo);
-    } else {
-        console.log('No game generated');
-    }
-    await checkAndUpdateWinner().catch(console.error);
-}
 
 
 //Check for winner from yesterday's game
@@ -207,6 +210,7 @@ async function updateWinnerInDB(gameId, winner) {
     const [rows] = await db.promise().query(query, [winner, gameId]);
     return rows.affectedRows;
 }
+
 async function checkAndUpdateWinner() {
     
     const yesterdaysDate = getYesterdaysDate();
@@ -224,5 +228,9 @@ async function checkAndUpdateWinner() {
         }
     }
 }
+
+//Write Information For Today's game to JSON
+
+
 
 module.exports = { generateAndInsertGame }
