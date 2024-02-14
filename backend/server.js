@@ -164,10 +164,10 @@ app.get('/getTodaysGame', (req, res) => {
 
     fs.readFile('gameForToday.json', 'utf8', (err, data) => {
         if (err) {
-            console.error('Error reading the top users file:', err);
+            console.error('Error reading todays game file:', err);
             return res.status(500).json({ error: 'Internal server error' });
         }
-        return res.json({ success: true, topUsers: JSON.parse(data) });
+        return res.json({ success: true, gameForToday: JSON.parse(data) });
     });
     
 });
