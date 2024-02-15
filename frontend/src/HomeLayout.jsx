@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import './HomeLayout.css'; 
 import './teamcard.css';
 import './infobox.css';
+import './iconbutton.css';
+import CountdownTimer from './CountdownTimer';
+import './CountdownTimer.css';
+import './streak.css';
 
 const HomeLayout = ({ userData, handleTeamSelect, handleTeamSubmit, handleSignOut, teamPick, todayDate, isSubmitDisabled, todaysGame, topUsers }) => {
     const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
@@ -30,9 +34,9 @@ const HomeLayout = ({ userData, handleTeamSelect, handleTeamSubmit, handleSignOu
             <nav className="navbar">
                 <div className="logo"><img src="logo.jpeg" /></div>
                 <div className="nav-icons">
-                    <button className="icon-button">?</button>
-                    <button className="icon-button" onClick={toggleLeaderboard}>🎖️</button>
-                    <button className="icon-button" onClick={handleSignOut}>Sign Out</button>
+                    <button className="button-56" role="button">?</button>
+                    <button className="button-56" role="button" onClick={toggleLeaderboard}>🏁</button>
+                    <button className="button-56" role="button" onClick={handleSignOut}>↪</button>
                 </div>
             </nav>
 
@@ -49,52 +53,56 @@ const HomeLayout = ({ userData, handleTeamSelect, handleTeamSubmit, handleSignOu
             <div className="box">
             <div class="text-box">
                     <div class="text-content">
-                        <h2 class="name">{userData.username}</h2>
-                        <p class="number">Your Current Streak: {userData.winningStreak}</p>
+                        
+                        <p class="ptext"> <span class="fancy">{userData.winningStreak} Day Streak</span>
+                        
+                        </p>
                         
                     </div>
                 </div>
             </div>
             
             
-
+            <div className="gamebox">
+                <div>
+                
+               <p class = "ptext2">
+               <span class="cfancy">Today's Game: </span>
+                
+               
+                
+                </p>
+                
+              
+            
             <div className="grid">
+            
                 <div className={`team ${selectedTeam === 1 ? 'team-selected' : ''}`} onClick={() => selectTeam(1)}>
+                        <div className="team-name">Home</div>
                         <img src={todaysGame['team1logo']} alt="Team 1" />
-                        <div className="team-name">{team1name}</div>
+                        <div className="team-name">New England Deflatriot's</div>
                 </div>
                     <div className={`team ${selectedTeam === 2 ? 'team-selected' : ''}`} onClick={() => selectTeam(2)}>
+                        <div className="team-name">Away</div>
                         <img src={todaysGame['team2logo']} alt="Team 2" />
                         <div className="team-name">{team2name}</div>
                     </div>
-            </div>
-            {teamPick && <button onClick={handleTeamSubmit} className="submit-btn" disabled={isSubmitDisabled}>Submit Team</button>}
-            
-            <div className="box">
-            <div class="text-box">
-                    <div class="text-content">
-                        <p class="day">Your Current Pick: {currentTeamText}</p>
-                        <p class="day">Game Time: {todayDate} at {gameTime} PST</p>
-                        <p class="day">Picks Lock At: 16:00 PST</p>
                     </div>
-                </div>
+                    Your Current Selection: {currentTeamText === '1' ? todaysGame['team1'] : currentTeamText === '2' ? todaysGame['team2'] : currentTeamText}
             </div>
+            </div>
+            
+            
+            {teamPick && <button onClick={handleTeamSubmit} className="submit-btn" disabled={isSubmitDisabled}>Submit Pick</button>}
+            
+            
         </div>
 
-            {/* <div className="content">
-                <h1>Welcome, {userData.username}</h1>
-                <p>Today's Date: {todayDate}</p>
-                <p>Your Current Streak: {userData.winningStreak}</p>
-                <p>Todays game: {JSON.stringify(todaysGame)}</p>
-                <p>Todays leaders: {JSON.stringify(topUsers)}</p>
-                <button onClick={() => handleTeamSelect(1)}>Team 1</button>
-                <button onClick={() => handleTeamSelect(2)}>Team 2</button>
-                <p>{currentTeamText}</p>
-                
-                
-             
-                
-            </div> */}
+           {/* Footer */}
+        <div className="footer">
+        
+            <CountdownTimer /> {/* This renders the countdown timer */}
+        </div>
         </div>
     );
 };

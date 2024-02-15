@@ -1,6 +1,8 @@
+
 .submit-btn {
+  margin-top: auto;
   padding: 10px 20px; 
-  background-color: #7077A1;
+  background-color: #3c3c3c;
   color: white; 
   border: none; /* Remove default border */
   border-radius: 5px; /* Slightly rounded corners for a modern look */
