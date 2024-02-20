@@ -1,0 +1,41 @@
+/* PopupModal.css */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modal-content {
+    background-color: #333;
+    padding: 20px;
+    border-radius: 8px;
+    color: #fff;
+    width: 90%;
+    max-width: 500px;
+  }
+  
+  .modal-divider {
+    background-color: #444;
+    height: 2px;
+    margin: 20px 0;
+  }
+  
+  .close-button {
+    background-color: #555;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .close-button:hover {
+    background-color: #666;
+  }

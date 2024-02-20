@@ -3,6 +3,7 @@ import './HomeLayout.css';
 import './teamcard.css';
 import './infobox.css';
 import './iconbutton.css';
+import Questionpopup from './questionpopup';
 import './graphs.css';
 import CountdownTimer from './CountdownTimer';
 import './CountdownTimer.css';
@@ -12,8 +13,10 @@ import Leaderboard from './leaderboard';
 
 const HomeLayout = ({ userData, handleTeamSelect, handleTeamSubmit, handleSignOut, teamPick, todayDate, isSubmitDisabled, todaysGame, topUsers }) => {
     const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const toggleLeaderboard = () => setIsLeaderboardOpen(!isLeaderboardOpen);
+    const toggleModal = () => setIsModalOpen(!isModalOpen);
 
     const currentTeamText = userData.currentTeamPick ? `${userData.currentTeamPick}` : 'No selection has been made';
   
@@ -37,12 +40,12 @@ const HomeLayout = ({ userData, handleTeamSelect, handleTeamSubmit, handleSignOu
             <nav className="navbar">
                 <div className="logo"><img src="logo.jpeg" /></div>
                 <div className="nav-icons">
-                    <button className="button-56" role="button">?</button>
+                    <button className="button-56" role="button" onClick={toggleModal}>?</button>
                     <button className="button-56" role="button" onClick={toggleLeaderboard}>🏁</button>
                     <button className="button-56" role="button" onClick={handleSignOut}>↪</button>
                 </div>
             </nav>
-
+            <Questionpopup isOpen={isModalOpen} onClose={toggleModal} githubLink="https://github.com/yourusername"/>
             {isLeaderboardOpen && <Leaderboard topUsers={topUsers} onClose={toggleLeaderboard}/>}
             <div className="container">
             <div className="box">
