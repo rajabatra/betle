@@ -99,6 +99,22 @@ const HomeLayout = ({ userData, handleTeamSelect, handleTeamSubmit, handleSignOu
             <div class="chartbox">
                 <p class="ptext">Stats</p>
             <div className="box"><ChartToggle userdata={userData}/></div>
+            <div className="stats-container">
+  <div className="stat-item">
+    <span className="stat-label">Username:</span>
+    <span className="stat-value">{userData.username}</span>
+  </div>
+  <hr className="divider"/>
+  <div className="stat-item">
+    <span className="stat-label">Total games played:</span>
+    <span className="stat-value">{userData.correct + userData.incorrect}</span>
+  </div>
+  <hr className="divider"/>
+  <div className="stat-item">
+    <span className="stat-label">Percent Correct:</span>
+    <span className="stat-value">{((userData.correct / (userData.correct + userData.incorrect)) * 100).toFixed(2)}%</span>
+  </div>
+</div>
             </div>
             
             
