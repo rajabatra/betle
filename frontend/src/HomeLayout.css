@@ -36,24 +36,7 @@
     padding: 20px;
 }
 
-.leaderboard-popup {
-    z-index: 10000;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
 
-.leaderboard-content {
-    background-color: red;
-    padding: 200px;
-    border-radius: 5px;
-}
 .container {
     text-align: center;
     margin: 20px;

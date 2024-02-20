@@ -8,6 +8,7 @@ import CountdownTimer from './CountdownTimer';
 import './CountdownTimer.css';
 import './streak.css';
 import ChartToggle from './charttoggle';
+import Leaderboard from './leaderboard';
 
 const HomeLayout = ({ userData, handleTeamSelect, handleTeamSubmit, handleSignOut, teamPick, todayDate, isSubmitDisabled, todaysGame, topUsers }) => {
     const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
@@ -42,15 +43,7 @@ const HomeLayout = ({ userData, handleTeamSelect, handleTeamSubmit, handleSignOu
                 </div>
             </nav>
 
-            {isLeaderboardOpen && (
-                <div className="leaderboard-popup">
-                    <div className="leaderboard-content">
-                        <h2>Leaderboard</h2>
-                        <p>{JSON.stringify(topUsers)}</p>
-                        <button onClick={toggleLeaderboard}>Close</button>
-                    </div>
-                </div>
-            )}
+            {isLeaderboardOpen && <Leaderboard topUsers={topUsers} onClose={toggleLeaderboard}/>}
             <div className="container">
             <div className="box">
             <div class="text-box">
@@ -104,8 +97,8 @@ const HomeLayout = ({ userData, handleTeamSelect, handleTeamSubmit, handleSignOu
             </div>
             </div>
             <div class="chartbox">
-            <h2>Stats</h2>
-            <div className="box"><ChartToggle /></div>
+                <p class="ptext">Stats</p>
+            <div className="box"><ChartToggle userdata={userData}/></div>
             </div>
             
             

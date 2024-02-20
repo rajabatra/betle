@@ -1,0 +1,70 @@
+.table-responsive {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+  
+  .table {
+    min-width: 600px;
+  }
+  .leaderboard-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #4d4d4d80;
+    z-index: 1050;
+  }
+  
+  .leaderboard-container {
+    background-color: #111111D8;
+    border-radius: 8px;
+    padding: 10%;
+    width: 80%;
+   
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+  
+  .user-row {
+    background-color: #111111;
+    border: 1px solid #dddddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 15px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+  }
+  .user-row .row {
+    margin: 0;
+  }
+  
+  .user-row .col {
+    color: #333; /* Dark text for readability */
+  }
+  
+  headert {
+    color: white; /* Dark text for the heading */
+  }
+  
+  .btn-danger {
+    font-weight: bold;
+  }
+  .rank, .username, .streak {
+    flex: 1;
+  }
+  
+  /* Ensures consistency and alignment */
+  .username {
+    border-left: 1px solid #eeeeee;
+    border-right: 1px solid #eeeeee;
+    padding: 0 10px;
+  }
+  .list-container {
+    display: flex;
+    flex-direction: column;
+  }

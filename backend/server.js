@@ -92,7 +92,7 @@ const authenticateToken = (req, res, next) => {
 // Route to get user data
 app.get('/getUserData', authenticateToken, (req, res) => {
     const userId = req.user.id;
-    const sql = "SELECT username, winning_streak, current_team_pick FROM users WHERE id = ?";
+    const sql = "SELECT username, winning_streak, current_team_pick, right_count, wrong_count FROM users WHERE id = ?";
  
     db.query(sql, [userId], (err, data) => {
         if (err) {

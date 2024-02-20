@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import HomeLayout from './HomeLayout';
 
 const Home = () => {
-    const [userData, setUserData] = useState({ username: '', streak: 0, currentTeamPick: '' });
+    const [userData, setUserData] = useState({ username: '', streak: 0, currentTeamPick: '', correct: 0, incorrect: 0 });
     const [teamPick, setTeamPick] = useState('');
     const [topUsers, setTopUsers] = useState({}); // New state for top users
     const [todaysGame, setTodaysGame] = useState({}); 
@@ -23,6 +23,8 @@ const Home = () => {
                     setUserData({
                         username: response.data.userData.username,
                         winningStreak: response.data.userData.winning_streak,
+                        correct: response.data.userData.right_count,
+                        incorrect: response.data.userData.wrong_count,
                         currentTeamPick: response.data.userData.current_team_pick || ''
                     });
                     setTeamPick(response.data.userData.current_team_pick || '');

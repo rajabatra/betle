@@ -14,7 +14,7 @@
 }
 .box2 {
     display: flex; 
-    width: 90%;
+    width: 98%;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
 }

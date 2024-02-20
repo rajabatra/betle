@@ -58,7 +58,7 @@ const options = {
   },
 };
 
-const ChartToggle = () => {
+const ChartToggle = ({userdata}) => {
   const [showFirstBarChart, setShowFirstBarChart] = useState(true);
   const [teamData, setTeamData] = useState({team1: 0, team2: 0});
 
@@ -66,8 +66,8 @@ const ChartToggle = () => {
     labels: ['Correct', 'Incorrect'],
     datasets: [
       {
-        label: '# of Votes',
-        data: [12, 19],
+        label: 'Days Correct vs Incorrect',
+        data: [userdata.correct, userdata.incorrect],
         backgroundColor: [
             'rgba(54, 162, 235, 0.2)',
             'rgba(255, 99, 132, 0.2)',
