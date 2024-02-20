@@ -87,6 +87,8 @@ const authenticateToken = (req, res, next) => {
     });
 };
 
+
+
 // Route to get user data
 app.get('/getUserData', authenticateToken, (req, res) => {
     const userId = req.user.id;
@@ -119,8 +121,8 @@ app.post('/updateTeamPick', authenticateToken, (req, res) => {
 
 //schedule for updating the reset picks
 const rule = new schedule.RecurrenceRule();
-rule.hour = 6;
-rule.minute = 34;
+rule.hour = 4;
+rule.minute = 3;
 rule.tz = 'Etc/UTC';
 
 schedule.scheduleJob(rule, async function(){
@@ -130,8 +132,8 @@ schedule.scheduleJob(rule, async function(){
 
 //schedule for calling the scraper
 const rule2 = new schedule.RecurrenceRule();
-rule2.hour = 6;
-rule2.minute = 30;
+rule2.hour = 3;
+rule2.minute = 6;
 rule2.tz = 'Etc/UTC';
 
 schedule.scheduleJob(rule2, async function(){
@@ -172,6 +174,52 @@ app.get('/getTodaysGame', (req, res) => {
     
 });
 
+//endpoint to get current pick percentages
+app.get('/getLivePicks', (req, res) => {
+    const fs = require('fs');
+
+    fs.readFile('userStats.json', 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error reading live stats file:', err);
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+        return res.json({ success: true, gameForToday: JSON.parse(data) });
+    });
+    
+});
+
+//write today's stats
+const userStatsRule = new schedule.RecurrenceRule();
+userStatsRule.hour = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]; 
+userStatsRule.minute = 1;
+
+schedule.scheduleJob(userStatsRule, function() {
+    const fs = require('fs');
+    const query = "SELECT current_team_pick, COUNT(*) AS count FROM users WHERE current_team_pick IN (1, 2) GROUP BY current_team_pick";
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Failed to query database:', err);
+            return;
+        }
+
+        const stats = { team1: 0, team2: 0 };
+        results.forEach(row => {
+            if (row.current_team_pick === 1) {
+                stats.team1 = row.count;
+            } else if (row.current_team_pick === 2) {
+                stats.team2 = row.count;
+            }
+        });
+
+        fs.writeFile('userStats.json', JSON.stringify(stats), (err) => {
+            if (err) {
+                console.error('Failed to write to file:', err);
+            } else {
+                console.log('User stats updated successfully');
+            }
+        });
+    });
+});
   
 
 

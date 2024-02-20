@@ -38,6 +38,19 @@ const updatePicksAndStreaks = async () => {
                 END
             `;
             await db.query(updateStreakSql, [winner, winner]);
+            const updaterightsql = `
+                UPDATE users 
+                SET right_count = CASE 
+                                    WHEN current_team_pick = ? THEN right_count + 1 
+                                    ELSE right_count 
+                                END,
+                    wrong_count = CASE 
+                                    WHEN current_team_pick != ? AND current_team_pick IN (1, 2) AND ? IS NOT NULL THEN wrong_count + 1 
+                                    ELSE wrong_count 
+                                END
+                WHERE current_team_pick IN (1, 2)
+            `;
+            await db.query(updaterightsql, [winner, winner, winner]);
 
             console.log("User streaks updated successfully");
 

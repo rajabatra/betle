@@ -15,7 +15,7 @@ const CountdownTimer = () => {
         // After 4 PM or before 1 AM, count down to 1 AM (meaning picks open after 1 AM)
         if (now.hour() >= 16 || now.hour() < 1) {
             targetTime = now.clone().startOf('day').add(1, 'days').hour(1); // Next day 1 AM
-            message = "Picks Open In:";
+            message = "Picks Unlock In:";
         } else {
             // After 1 AM and before 4 PM, count down to 4 PM (meaning picks lock at 4 PM)
             targetTime = now.clone().startOf('day').hour(16); // Same day 4 PM

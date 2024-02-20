@@ -1,7 +1,7 @@
 {
-  "team1": "Philadelphia 76ers",
-  "team2": "Atlanta Hawks",
-  "team1logo": "https://upload.wikimedia.org/wikipedia/fr/4/48/76ers_2016.png",
-  "team2logo": "https://upload.wikimedia.org/wikipedia/fr/e/ee/Hawks_2016.png",
-  "game_time": "16:00:00"
+  "team1": "lakers",
+  "team2": "nuggets",
+  "team1logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Los_Angeles_Lakers_logo.svg/220px-Los_Angeles_Lakers_logo.svg.png",
+  "team2logo": "https://upload.wikimedia.org/wikipedia/fr/thumb/3/35/Nuggets_de_Denver_2018.png/180px-Nuggets_de_Denver_2018.png",
+  "game_time": "00:00:00"
 }

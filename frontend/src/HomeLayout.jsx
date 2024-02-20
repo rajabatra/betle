@@ -3,9 +3,11 @@ import './HomeLayout.css';
 import './teamcard.css';
 import './infobox.css';
 import './iconbutton.css';
+import './graphs.css';
 import CountdownTimer from './CountdownTimer';
 import './CountdownTimer.css';
 import './streak.css';
+import ChartToggle from './charttoggle';
 
 const HomeLayout = ({ userData, handleTeamSelect, handleTeamSubmit, handleSignOut, teamPick, todayDate, isSubmitDisabled, todaysGame, topUsers }) => {
     const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
@@ -78,22 +80,36 @@ const HomeLayout = ({ userData, handleTeamSelect, handleTeamSubmit, handleSignOu
             <div className="grid">
             
                 <div className={`team ${selectedTeam === 1 ? 'team-selected' : ''}`} onClick={() => selectTeam(1)}>
-                        <div className="team-name">Home</div>
+                        
+                    <div className="team-content">
+                         <div className="team-name">Home</div>
                         <img src={todaysGame['team1logo']} alt="Team 1" />
-                        <div className="team-name">New England Deflatriot's</div>
+                        <div className="team-name">{team1name}</div>
+                    </div>
+                       
                 </div>
                     <div className={`team ${selectedTeam === 2 ? 'team-selected' : ''}`} onClick={() => selectTeam(2)}>
+                    <div className="team-content">
                         <div className="team-name">Away</div>
                         <img src={todaysGame['team2logo']} alt="Team 2" />
                         <div className="team-name">{team2name}</div>
+                     </div>
+                        
                     </div>
                     </div>
+                    <p class = "ptext3">
                     Your Current Selection: {currentTeamText === '1' ? todaysGame['team1'] : currentTeamText === '2' ? todaysGame['team2'] : currentTeamText}
+                    </p>
+                    {teamPick && <button onClick={handleTeamSubmit} className="submit-btn" disabled={isSubmitDisabled}>Submit Pick</button>}
             </div>
+            </div>
+            <div class="chartbox">
+            <h2>Stats</h2>
+            <div className="box"><ChartToggle /></div>
             </div>
             
             
-            {teamPick && <button onClick={handleTeamSubmit} className="submit-btn" disabled={isSubmitDisabled}>Submit Pick</button>}
+           
             
             
         </div>

@@ -31,7 +31,7 @@ async function generateAndInsertGame() {
     } else {
         console.log('No game generated');
     }
-    
+    await checkAndUpdateWinner().catch(console.error);
 }
 
 async function checkGames(leagueUrl, date) {
@@ -201,7 +201,9 @@ async function insertGameToDb(gameInfo) {
 function getYesterdaysDate() {
     const date = new Date();
     date.setDate(date.getDate() - 1);
+    console.log(date.toISOString().split('T')[0])
     return date.toISOString().split('T')[0];
+    
 }
 
 // Function to update the winner in the database
