@@ -1,0 +1,27 @@
+[
+  {
+    "id": 1,
+    "username": "test",
+    "winning_streak": 6
+  },
+  {
+    "id": 2,
+    "username": "v",
+    "winning_streak": 2
+  },
+  {
+    "id": 3,
+    "username": "vkris",
+    "winning_streak": 1
+  },
+  {
+    "id": 4,
+    "username": "vkris2",
+    "winning_streak": 0
+  },
+  {
+    "id": 5,
+    "username": "vkris3",
+    "winning_streak": 0
+  }
+]

@@ -1,0 +1,92 @@
+.text-box {
+    background-color: #111111;;
+    z-index: 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding: 1%;
+    width: 100%; /* Makes .text-box responsive to the width of .container */
+   
+    transform: scale(0.98);
+    transition: transform 0.3s ease-in-out;
+    animation: slideIn 0.5s ease-out forwards;
+    border: 2px solid #4d4d4d;
+}
+
+.text-box:hover {
+    transform: scale(1);
+}
+
+.text-content h2, .text-content p {
+    margin: 0;
+    opacity: 0;
+    animation: fadeInUp 1s ease-out forwards;
+}
+
+.text-content h2 {
+    animation-delay: 0.5s;
+}
+
+.text-content .number {
+    animation-delay: 0.8s;
+}
+
+.text-content .day {
+    animation-delay: 1.1s;
+}
+.name {
+    text-transform: uppercase;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(20px) scale(0.98);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0) scale(0.98);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+.stats-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%; /* Fill the container */
+    
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+  
+  .stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+  }
+  
+  .stat-label {
+    font-weight: bold;
+    color: #666;
+  }
+  
+  .stat-value {
+    color: #666;
+  }
+  
+  .divider {
+    border: none;
+    height: 1px;
+    background: aliceblue;
+    margin: 10px 0;
+  }

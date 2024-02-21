@@ -1,0 +1,23 @@
+
+.submit-btn {
+  margin-top: auto;
+  padding: 10px 20px; 
+  background-color: #3c3c3c;
+  color: white; 
+  border: none; /* Remove default border */
+  border-radius: 5px; /* Slightly rounded corners for a modern look */
+  font-size: 16px; /* Readable text size */
+  cursor: pointer; /* Change cursor to pointer to indicate it's clickable */
+  display: block; /* Ensure it's a block element */
+  margin: 20px auto; /* Center the button with automatic horizontal margins */
+  transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+.submit-btn:hover {
+  background-color: #2D3250; /* Darker shade of blue on hover for interaction feedback */
+}
+
+.submit-btn:disabled {
+  background-color: #cccccc; /* Gray out the button when disabled */
+  cursor: not-allowed; /* Change cursor to indicate it's not allowed to click */
+}
