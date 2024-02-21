@@ -51,24 +51,24 @@ function Login({ setIsLoggedIn }) {
         };
 
     return (
-        <div className='d-flex justify-content-center align-items-center bg-primary vh-100'>
-            <div className='bg-white p-3 rounded w-25'>
-            <h2>Sign-In</h2>
+        <div className='d-flex justify-content-center align-items-center bg-black vh-100'>
+            <div className='bg-dark p-3 rounded'>
+            <h2 className='text-white'>Sign-In</h2>
                 <form action="" onSubmit={handleSubmit}>
                     <div className='mb-3'>
-                        <label htmlFor="email">Email</label>
+                        <label className='text-white' htmlFor="email">Email</label>
                         <input type="email" placeholder='Enter Email'  onChange={handleInput} className='form-control rounded-0' name='email'/>
                         {errors.email && <span className='text-danger'> {errors.email} </span>}
                     </div>
                     
                     <div className='mb-3'>
-                        <label htmlFor="password">Password</label>
+                        <label className='text-white' htmlFor="password">Password</label>
                         <input type="password" placeholder='Enter Password'  onChange={handleInput} name='password' className='form-control rounded-0'/>
                         {errors.password && <span className='text-danger'> {errors.password} </span>}
                     </div>
                     <button type='submit' className='btn btn-success w-100'><strong>Log in</strong></button>
-                    <p>You agree to our terms and policies</p>
-                    <Link to='/signup' className='btn btn-default border w-100'>Create account</Link>
+                    <p className='text-white'>You agree to our terms and policies</p>
+                    <Link to='/signup' className='btn text-white btn-default border w-100'>Create account</Link>
                 </form>
             </div>
         </div>

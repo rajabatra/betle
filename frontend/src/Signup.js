@@ -2,6 +2,7 @@ import React, {useState} from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import Validation from './SignUpValidation'
 import axios from 'axios'
+import './signup.css'
 
 function Signup(){
 
@@ -45,8 +46,8 @@ function Signup(){
         }
 
     return(
-        <div className='d-flex justify-content-center align-items-center bg-primary vh-100'>
-        <div className='bg-white p-3 rounded w-25'>
+        <div className='d-flex justify-content-center align-items-center bg-dark vh-100'>
+        <div className='bg-light p-3 rounded'>
             <h2>Sign-Up</h2>
             <form action="" onSubmit={handleSubmit}>
                 <div className='mb-3'>
@@ -69,6 +70,12 @@ function Signup(){
                 <Link to='/' className='btn btn-default border w-100'>Log In</Link>
             </form>
         </div>
+        <div class="basketball">
+            <div class="ball">
+            <div class="lines"></div>
+         </div>
+         <div class="shadow"></div>
+  </div>
     </div>
     )
 }
