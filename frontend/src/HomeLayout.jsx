@@ -38,7 +38,7 @@ const HomeLayout = ({ userData, handleTeamSelect, handleTeamSubmit, handleSignOu
     return (
         <div className="home-layout">
             <nav className="navbar">
-                <div className="logo"><img src="logo.jpeg" /></div>
+                <div className="logo"><img src="betl.jpg" /></div>
                 <div className="nav-icons">
                     <button className="button-56" role="button" onClick={toggleModal}>?</button>
                     <button className="button-56" role="button" onClick={toggleLeaderboard}>🏁</button>

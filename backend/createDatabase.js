@@ -31,6 +31,8 @@ connection.connect((err) => {
           email VARCHAR(255) NOT NULL,
           password VARCHAR(255) NOT NULL,
           current_team_pick INT,
+          passwordResetToken VARCHAR(255) NOT NULL,
+          passwordResetExpires DATETIME NOT NULL,
           winning_streak INT DEFAULT 0,
           right_count INT DEFAULT 0,
           wrong_count INT DEFAULT 0
@@ -53,8 +55,7 @@ connection.connect((err) => {
             game_time TIME NOT NULL,
             winner VARCHAR(255),
             home_picks INT DEFAULT 0,
-            away_picks INT DEFAULT 0,
-
+            away_picks INT DEFAULT 0
           )`;
         connection.query(createGamesTableQuery, (err, results) => {
           if (err) throw err;

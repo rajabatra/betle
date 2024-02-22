@@ -5,7 +5,7 @@
     max-width: 100vw;
     flex-direction: column;
     background-color: black;
-    color: #04FDCF; 
+    color: #cccccc;
     font-family: sans-serif;
     overflow-x: hidden;
     font-weight: bold;
@@ -25,6 +25,7 @@
 
 .nav-icons {
     display: flex;
+    max-width: 50vw;
 }
 
 .icon-button {
@@ -95,6 +96,7 @@
     transition: transform 0.3s ease; /* Smooth transition for hover effect */
 }
 
+
 .team img {
     max-height: 24vh; /* Smaller maximum height */
     max-width: 90%; /* Maximum width to be less than container width */
@@ -108,6 +110,7 @@
     
 }
 .team-content {
+    color: #618386;
     display: flex;
     flex-direction: column;
     justify-content: space-between; /* Align items to start and end */
@@ -133,6 +136,7 @@
 
 .logo img {
     max-height: 50px; /* Adjust this value to fit your design */
+    max-width: 50vw;
     width: auto; /* This maintains the aspect ratio of the image */
 }
 
@@ -142,7 +146,7 @@
     bottom: 0;
     width: 100%;
     background-color: #333; /* Change as per your design */
-    color: white; /* Change as per your design */
+    color: #999; /* Change as per your design */
     text-align: center;
     padding: 10px 0;
     height: 7vh;

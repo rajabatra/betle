@@ -2,26 +2,36 @@
   {
     "id": 1,
     "username": "test",
-    "winning_streak": 6
+    "winning_streak": 0
   },
   {
     "id": 2,
     "username": "v",
-    "winning_streak": 2
+    "winning_streak": 0
   },
   {
     "id": 3,
     "username": "vkris",
-    "winning_streak": 1
+    "winning_streak": 0
   },
   {
     "id": 4,
-    "username": "vkris2",
+    "username": "vkris",
     "winning_streak": 0
   },
   {
     "id": 5,
-    "username": "vkris3",
+    "username": "s",
+    "winning_streak": 0
+  },
+  {
+    "id": 6,
+    "username": "2",
+    "winning_streak": 0
+  },
+  {
+    "id": 7,
+    "username": "ewrewrw",
     "winning_streak": 0
   }
 ]

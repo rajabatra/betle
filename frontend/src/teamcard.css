@@ -3,7 +3,7 @@
   margin-top: auto;
   padding: 10px 20px; 
   background-color: #3c3c3c;
-  color: white; 
+  color: #c1e2be; 
   border: none; /* Remove default border */
   border-radius: 5px; /* Slightly rounded corners for a modern look */
   font-size: 16px; /* Readable text size */
@@ -18,6 +18,7 @@
 }
 
 .submit-btn:disabled {
+  color:#3c3c3c;
   background-color: #cccccc; /* Gray out the button when disabled */
   cursor: not-allowed; /* Change cursor to indicate it's not allowed to click */
 }

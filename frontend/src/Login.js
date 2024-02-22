@@ -49,6 +49,22 @@ function Login({ setIsLoggedIn }) {
                     });
             }
         };
+        // Forgot Password Handler
+    const handleForgotPassword = () => {
+        if (!values.email) {
+            alert("Please enter your email address.");
+            return;
+        }
+
+        axios.post('http://localhost:8081/forgotPassword', { email: values.email })
+            .then(response => {
+                alert("If there is an account associated with this email, you will receive a password reset link.");
+            })
+            .catch(error => {
+                console.log("Error sending forgot password request:", error);
+                alert("Error sending forgot password request. Please try again later.");
+            });
+    };
 
     return (
         <div className='d-flex justify-content-center align-items-center bg-black vh-100'>
@@ -67,6 +83,9 @@ function Login({ setIsLoggedIn }) {
                         {errors.password && <span className='text-danger'> {errors.password} </span>}
                     </div>
                     <button type='submit' className='btn btn-success w-100'><strong>Log in</strong></button>
+                    <div className='text-center my-2'>
+                        <button type='button' onClick={handleForgotPassword} className='btn btn-link text-white'>Forgot Password?</button>
+                    </div>
                     <p className='text-white'>You agree to our terms and policies</p>
                     <Link to='/signup' className='btn text-white btn-default border w-100'>Create account</Link>
                 </form>
