@@ -1,7 +1,7 @@
 const mysql = require("mysql2");
 
 
-function setupDB() {
+function createDB() {
   const connection = process.env.LOCAL_DB ? mysql.createPool({
     host: 'db',
     user: 'root',
@@ -46,4 +46,4 @@ function setupDB() {
   );
 }
 
-module.exports = { setupDB }
+module.exports = { createDB }

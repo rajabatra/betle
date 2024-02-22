@@ -3,21 +3,10 @@ const fetch = require("node-fetch");
 const mysql = require("mysql2");
 const fs = require('fs');
 const { checkWinner } = require('./winner');
+const { createDB } = require("./createDatabase");
 
 // database
-const db = process.env.LOCAL_DB
-  ? mysql.createPool({
-      host: "db",
-      user: "root",
-      password: process.env.DB_PASS,
-      database: process.env.DB_NAME,
-    })
-  : mysql.createPool({
-    host: "g84t6zfpijzwx08q.cbetxkdyhwsb.us-east-1.rds.amazonaws.com",
-    user: "ajezug5c2jtz5d4z",
-    password: "n34zb61zk2yfdhlm",
-    database: "c1gr4bjdqxa06vz0",
-  });
+const db = createDB();
 
 const leagues = [
   "https://v1.american-football.api-sports.io",

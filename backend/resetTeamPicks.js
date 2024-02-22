@@ -4,15 +4,11 @@ finally, it updates the leaderboard */
 
 const mysql = require("mysql2/promise");
 const dayjs = require("dayjs");
+const { createDB } = require("./createDatabase");
 const fs = require("fs").promises;
 
 // Database connection configuration
-const db = mysql.createPool({
-  host: "g84t6zfpijzwx08q.cbetxkdyhwsb.us-east-1.rds.amazonaws.com",
-  user: "ajezug5c2jtz5d4z",
-  password: "n34zb61zk2yfdhlm",
-  database: "c1gr4bjdqxa06vz0",
-});
+const db = createDB();
 
 // Function to update user picks and streaks
 const updatePicksAndStreaks = async () => {
