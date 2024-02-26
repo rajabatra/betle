@@ -40,12 +40,12 @@ const HomeLayout = ({ userData, handleTeamSelect, handleTeamSubmit, handleSignOu
             <nav className="navbar">
                 <div className="logo"><img src="betl.jpg" /></div>
                 <div className="nav-icons">
-                    <button className="button-56" role="button" onClick={toggleModal}>?</button>
-                    <button className="button-56" role="button" onClick={toggleLeaderboard}>🏁</button>
-                    <button className="button-56" role="button" onClick={handleSignOut}>↪</button>
+                    <button className="button-56" role="button" onClick={toggleModal}><img src="info.png" /></button>
+                    <button className="button-56" role="button" onClick={toggleLeaderboard}><img src="leaderboard.png" /></button>
+                    <button className="button-56" role="button" onClick={handleSignOut}><img src="signout.svg"/></button>
                 </div>
             </nav>
-            <Questionpopup isOpen={isModalOpen} onClose={toggleModal} githubLink="https://github.com/yourusername"/>
+            <Questionpopup isOpen={isModalOpen} onClose={toggleModal} githubLink="https://github.com/rajabatra"/>
             {isLeaderboardOpen && <Leaderboard topUsers={topUsers} onClose={toggleLeaderboard}/>}
             <div className="container">
             <div className="box">
@@ -67,7 +67,7 @@ const HomeLayout = ({ userData, handleTeamSelect, handleTeamSubmit, handleSignOu
                <p class = "ptext2">
                <span class="cfancy">Today's Game: </span>
                 
-               
+             
                 
                 </p>
                 
@@ -79,7 +79,9 @@ const HomeLayout = ({ userData, handleTeamSelect, handleTeamSubmit, handleSignOu
                         
                     <div className="team-content">
                          <div className="team-name">Home</div>
+                        
                         <img src={todaysGame['team1logo']} alt="Team 1" />
+                       
                         <div className="team-name">{team1name}</div>
                     </div>
                        
@@ -87,16 +89,31 @@ const HomeLayout = ({ userData, handleTeamSelect, handleTeamSubmit, handleSignOu
                     <div className={`team ${selectedTeam === 2 ? 'team-selected' : ''}`} onClick={() => selectTeam(2)}>
                     <div className="team-content">
                         <div className="team-name">Away</div>
+                    
                         <img src={todaysGame['team2logo']} alt="Team 2" />
+                        
                         <div className="team-name">{team2name}</div>
                      </div>
                         
                     </div>
                     </div>
-                    <p class = "ptext3">
-                    Your Current Selection: {currentTeamText === '1' ? todaysGame['team1'] : currentTeamText === '2' ? todaysGame['team2'] : currentTeamText}
-                    </p>
                     {teamPick && <button onClick={handleTeamSubmit} className="submit-btn" disabled={isSubmitDisabled}>Submit Pick</button>}
+                    <div className="stats-container">
+                    <hr className="divider"/>
+  <div className="stat-item">
+    <span className="stat-label">Current Pick:</span>
+    <span className="stat-value">{currentTeamText === '1' ? todaysGame['team1'] : currentTeamText === '2' ? todaysGame['team2'] : currentTeamText}</span>
+  </div>
+  <hr className="divider"/>
+  <div className="stat-item">
+    <span className="stat-label">Gametime PST:</span>
+    <span className="stat-value">{gameTime}</span>
+  </div>
+  
+</div>
+                    
+                   
+       
             </div>
             </div>
             <div class="chartbox">

@@ -6,55 +6,87 @@ const cors = require("cors");
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const { google } = require("googleapis");
-const OAuth2 = google.auth.OAuth2;
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+
+//handle rate limit
+const rateLimit = require('express-rate-limit');
+
+// Define a rate limit for login attempts
+const loginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 5, //5 calls
+    statusCode: 429, // Status code to be sent when rate limit is exceeded
+    message: {
+        error: "Too many attempts from this IP, please try again after 15 minutes"
+    }
+    
+});
+
+//login and signup
 
 app.post('/signup', (req, res) => {
     const checkEmailSql = "SELECT * FROM users WHERE email = ?";
     const insertSql = "INSERT INTO users (username, email, password) VALUES (?)";
-    const values = [req.body.name, req.body.email, req.body.password];
-
-    db.query(checkEmailSql, [req.body.email], (err, data) => {
+    //const values = [req.body.name, req.body.email, req.body.password];
+    const password = req.body.password;
+    bcrypt.hash(password, saltRounds, function(err, hash) { 
         if (err) {
             return res.status(500).json({ error: err.message });
         }
+        const values = [req.body.name, req.body.email, hash];
+        db.query(checkEmailSql, [req.body.email], (err, data) => {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
 
-        if (data.length > 0) {
-            return res.status(409).json({ error: "This email is already being used" });
-        } else {
-            db.query(insertSql, [values], (insertErr, insertData) => {
-                if (insertErr) {
-                    return res.status(500).json({ error: insertErr.message });
-                }
-                return res.json({ success: true, data: insertData });
-            });
-        }
+            if (data.length > 0) {
+                return res.status(409).json({ error: "This email is already being used" });
+            } else {
+                db.query(insertSql, [values], (insertErr, insertData) => {
+                    if (insertErr) {
+                        return res.status(500).json({ error: insertErr.message });
+                    }
+                    return res.json({ success: true, data: insertData });
+                });
+            }
+        });
     });
 });
 
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET;
 
-app.post('/login', (req, res) => {
-    const sql = "SELECT id, username, winning_streak, current_team_pick  FROM users WHERE email = ? AND password = ?";
-
-    db.query(sql, [req.body.email, req.body.password], (err, data) => {
+app.post('/login', loginLimiter, (req, res) => {
+    // Adjusted SQL to retrieve user by email only
+    const sql = "SELECT id, username, password, winning_streak, current_team_pick FROM users WHERE email = ?";
+    
+    db.query(sql, [req.body.email], (err, data) => {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
         if (data.length > 0) {
-            // Successfully logged in
             const user = data[0];
-            const token = jwt.sign({ id: user.id, username: user.username }, JWT_SECRET);
-
-            return res.json({ success: true, token: token, user: data[0]});
-            //return res.json({ success: true, user: data[0] });
+            // Now compare the provided password with the hashed password stored in the database
+            bcrypt.compare(req.body.password, user.password, function(err, result) {
+                if (err) {
+                    return res.status(500).json({ error: err.message });
+                }
+                if (result) {
+                    // Passwords match
+                    const token = jwt.sign({ id: user.id, username: user.username }, JWT_SECRET);
+                    return res.json({ success: true, token: token, user: {id: user.id, username: user.username, winning_streak: user.winning_streak, current_team_pick: user.current_team_pick} });
+                } else {
+                    // Passwords don't match
+                    return res.status(401).json({ error: "Invalid email or password" });
+                }
+            });
         } else {
-            // Login failed
+            // No user found with that email
             return res.status(401).json({ error: "Invalid email or password" });
         }
-    })
-})
-
+    });
+});
 
 
 // Authentication Middleware
@@ -108,8 +140,8 @@ const transporter = nodemailer.createTransport({
     port: 465,
     secure: true,
     auth: {
-      user: "thebetlapp@gmail.com",
-      pass: "ovuv nick nrcs xyew",
+      user: process.env.EMAIL,
+      pass: process.env.EPASSWORD,
     },
   });
   //when u hit forgot password for email
@@ -153,22 +185,32 @@ const transporter = nodemailer.createTransport({
   app.post('/resetPassword', (req, res) => {
     const token = req.query.token;
     const newPassword = req.body.password;
+
     db.query('SELECT * FROM users WHERE passwordResetToken = ? AND passwordResetExpires > ?', [token, new Date()], (err, users) => {
-      if (err) {
-        return res.status(500).json({ error: err.message });
-      }
-      if (users.length > 0) {
-        const user = users[0];
-        db.query('UPDATE users SET password = ?, passwordResetToken = NULL, passwordResetExpires = NULL WHERE id = ?', [newPassword, user.id], (err, result) => {
-          if (err) {
+        if (err) {
             return res.status(500).json({ error: err.message });
-          }
-          return res.json({ success: true, message: 'Password has been reset successfully' });
-        });
-      } else {
-        return res.status(400).json({ error: "Password reset token is invalid or has expired" });
-      }
+        }
+        if (users.length > 0) {
+            const user = users[0];
+            // Hash the new password before updating it in the database
+            bcrypt.hash(newPassword, 10, function(err, hash) {
+                if (err) {
+                    return res.status(500).json({ error: err.message });
+                }
+                // Use the hashed password for the update
+                db.query('UPDATE users SET password = ?, passwordResetToken = NULL, passwordResetExpires = NULL WHERE id = ?', [hash, user.id], (updateErr, result) => {
+                    if (updateErr) {
+                        return res.status(500).json({ error: updateErr.message });
+                    }
+                    return res.json({ success: true, message: 'Password has been reset successfully' });
+                });
+            });
+        } else {
+            return res.status(400).json({ error: "Password reset token is invalid or has expired" });
+        }
     });
-  });
+});
+
+
 
 module.exports = app;

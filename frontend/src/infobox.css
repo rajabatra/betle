@@ -3,14 +3,12 @@
     z-index: 0;
     
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
+    border-radius: 1%;
     padding: 1%;
     width: 100%; /* Makes .text-box responsive to the width of .container */
    
-    transform: scale(0.98);
-    transition: transform 0.3s ease-in-out;
-    animation: slideIn 0.5s ease-out forwards;
-    border: 2px solid #4d4d4d;
+    
+    border: 1.5px solid #618386;
 }
 
 .text-box:hover {

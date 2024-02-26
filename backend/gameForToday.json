@@ -1,7 +1,7 @@
 {
-  "team1": "Utah Jazz",
-  "team2": "Charlotte Hornets",
-  "team1logo": "https://upload.wikimedia.org/wikipedia/fr/3/3b/Jazz_de_l%27Utah_logo.png",
-  "team2logo": "https://upload.wikimedia.org/wikipedia/fr/thumb/f/f3/Hornets_de_Charlotte_logo.svg/1200px-Hornets_de_Charlotte_logo.svg.png",
-  "game_time": "18:00:00"
+  "team1": "Detroit Pistons",
+  "team2": "Orlando Magic",
+  "team1logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Logo_of_the_Detroit_Pistons.png/300px-Logo_of_the_Detroit_Pistons.png",
+  "team2logo": "https://upload.wikimedia.org/wikipedia/fr/b/bd/Orlando_Magic_logo_2010.png",
+  "game_time": "17:00:00"
 }

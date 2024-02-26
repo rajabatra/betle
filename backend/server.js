@@ -21,8 +21,8 @@ app.use('/', authRoutes);
 
 //schedule for updating the reset picks
 const rule = new schedule.RecurrenceRule();
-rule.hour = 4;
-rule.minute = 48;
+rule.hour = 6;
+rule.minute = 19;
 rule.tz = 'Etc/UTC';
 
 schedule.scheduleJob(rule, async function(){

@@ -49,7 +49,7 @@ const ResetPassword = () => {
         .then(data => {
             if (data.success) {
                 alert('Password has been reset successfully.');
-                navigate('/login'); // Redirect to login page
+                navigate('/'); // Redirect to login page
             } else {
                 alert('Error: ' + data.error);
             }

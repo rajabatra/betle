@@ -26,6 +26,8 @@
 .nav-icons {
     display: flex;
     max-width: 50vw;
+    min-height: 70%;
+    max-height: 100%;
 }
 
 .icon-button {
@@ -54,21 +56,22 @@
 }
 .box {
     display: flex; 
-    width: 102%;
+    width: 100%;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
+    
+    border-radius: 1%;
     
 }
 .gamebox {
     margin: 2%;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(224, 217, 217, 0.1);
+    border-radius: 1%;
     width: 100%;
     
     justify-content: space-around;
     display: flex; 
     background-color: #111111;
-    border: 2px solid #4d4d4d;
+    border: 1.55px solid #618386;
 }
 
 
@@ -134,11 +137,7 @@
     to {color: black} /* Example selected color, adjust as needed */
 }
 
-.logo img {
-    max-height: 50px; /* Adjust this value to fit your design */
-    max-width: 50vw;
-    width: auto; /* This maintains the aspect ratio of the image */
-}
+
 
 .footer {
     position: fixed;
@@ -157,5 +156,17 @@
 @media (max-width: 600px) {
     .grid {
         grid-template-columns: 1fr;
+    }
+    .nav-icons {
+        display: flex;
+        max-width: 47vw;
+        min-height: 70%;
+        max-height: 100%;
+        
+    }
+    .logo img {
+        max-height: 50px; /* Adjust this value to fit your design */
+        max-width: 50vw;
+        width: auto; /* This maintains the aspect ratio of the image */
     }
 }

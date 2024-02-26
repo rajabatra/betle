@@ -15,7 +15,7 @@ const Questionpopup = ({ isOpen, onClose, githublink }) => {
             go up by 1. Otherwise it will reset to 0. Games are selected from the following sports: football, basketball, baseball, and soccer.
         </p>
         <hr className="modal-divider"/>
-        <a href={githublink} target="_blank" rel="noopener noreferrer">Check Out The Project</a>
+        <a href='https://github.com/rajabatra' target="_blank" rel="noopener noreferrer">Check Out The Project</a>
         <button className="close-button" onClick={onClose}>Close</button>
       </div>
     </div>

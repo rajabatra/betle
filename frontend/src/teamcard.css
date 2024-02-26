@@ -1,9 +1,10 @@
 
 .submit-btn {
+  width: 90%;
   margin-top: auto;
   padding: 10px 20px; 
   background-color: #3c3c3c;
-  color: #c1e2be; 
+  color: aliceblue; 
   border: none; /* Remove default border */
   border-radius: 5px; /* Slightly rounded corners for a modern look */
   font-size: 16px; /* Readable text size */

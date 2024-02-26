@@ -217,7 +217,6 @@ async function checkAndUpdateWinner() {
     
     const yesterdaysDate = getYesterdaysDate();
     console.log(yesterdaysDate)
-    // Replace 'dateColumn' with the actual column name that stores the date in your games table
     const query = 'SELECT gameid, sport FROM games WHERE game_date = ?';
     const [games] = await db.promise().query(query, [yesterdaysDate]);
     console.log(games)
@@ -231,7 +230,7 @@ async function checkAndUpdateWinner() {
     }
 }
 
-//Write Information For Today's game to JSON
+//Write yesterdays game
 
 
 
