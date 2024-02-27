@@ -20,9 +20,10 @@ app.use('/', authRoutes);
 
 
 //schedule for updating the reset picks
+//this should be called after scraper
 const rule = new schedule.RecurrenceRule();
-rule.hour = 6;
-rule.minute = 19;
+rule.hour = 9;
+rule.minute = 2;
 rule.tz = 'Etc/UTC';
 
 schedule.scheduleJob(rule, async function(){
@@ -32,8 +33,8 @@ schedule.scheduleJob(rule, async function(){
 
 //schedule for calling the scraper
 const rule2 = new schedule.RecurrenceRule();
-rule2.hour = 4;
-rule2.minute = 47;
+rule2.hour = 9;
+rule2.minute = 0;
 rule2.tz = 'Etc/UTC';
 
 schedule.scheduleJob(rule2, async function(){

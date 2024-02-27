@@ -25,7 +25,7 @@ const loginLimiter = rateLimit({
 
 //login and signup
 
-app.post('/signup', (req, res) => {
+app.post('/signup', loginLimiter, (req, res) => {
     const checkEmailSql = "SELECT * FROM users WHERE email = ?";
     const insertSql = "INSERT INTO users (username, email, password) VALUES (?)";
     //const values = [req.body.name, req.body.email, req.body.password];
@@ -78,12 +78,12 @@ app.post('/login', loginLimiter, (req, res) => {
                     return res.json({ success: true, token: token, user: {id: user.id, username: user.username, winning_streak: user.winning_streak, current_team_pick: user.current_team_pick} });
                 } else {
                     // Passwords don't match
-                    return res.status(401).json({ error: "Invalid email or password" });
+                    return res.status(401).json({ error: "Invalid password" });
                 }
             });
         } else {
             // No user found with that email
-            return res.status(401).json({ error: "Invalid email or password" });
+            return res.status(401).json({ error: "Invalid email" });
         }
     });
 });
@@ -102,7 +102,7 @@ const authenticateToken = (req, res, next) => {
 };
 
 // Route to get user data
-app.get('/getUserData', authenticateToken, (req, res) => {
+app.get('/getUserData', loginLimiter, authenticateToken, (req, res) => {
     const userId = req.user.id;
     const sql = "SELECT username, winning_streak, current_team_pick, right_count, wrong_count FROM users WHERE id = ?";
  
@@ -118,7 +118,7 @@ app.get('/getUserData', authenticateToken, (req, res) => {
     });
 });
 
-app.post('/updateTeamPick', authenticateToken, (req, res) => {
+app.post('/updateTeamPick', loginLimiter, authenticateToken, (req, res) => {
     const userId = req.user.id;
     const teamPick = req.body.teamPick;
 
@@ -145,7 +145,7 @@ const transporter = nodemailer.createTransport({
     },
   });
   //when u hit forgot password for email
-  app.post('/forgotPassword', (req, res) => {
+  app.post('/forgotPassword', loginLimiter, (req, res) => {
     const email = req.body.email;
     crypto.randomBytes(32, (err, buffer) => {
       if (err) {
@@ -182,7 +182,7 @@ const transporter = nodemailer.createTransport({
   });
 
   //for resetting password:
-  app.post('/resetPassword', (req, res) => {
+  app.post('/resetPassword', loginLimiter, (req, res) => {
     const token = req.query.token;
     const newPassword = req.body.password;
 
