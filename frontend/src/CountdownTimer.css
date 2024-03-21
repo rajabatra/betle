@@ -1,0 +1,15 @@
+/* CountdownTimer.css */
+.countdown-timer {
+    
+    
+    border-radius: 5px;
+    text-align: center;
+    margin: 0%;
+    font-size: 5vw;
+    
+}
+@media (min-width: 1000px) {
+    .countdown-timer {
+        font-size: 30px; /* Fixed font size for screens wider than 1200px */
+    }
+}

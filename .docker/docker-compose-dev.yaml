@@ -1,0 +1,63 @@
+name: betl-dev
+services:
+  backend:
+    build:
+      context: ../backend
+    develop:
+      watch:
+        - action: sync+restart
+          path: ../backend/
+          target: /usr/src/app/
+    environment:
+      - LOCAL_DB=true
+      - DB_PASS=mysqlrootpass
+      - DB_NAME=betldb
+    networks:
+      - client-side
+      - server-side
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - 8081:8081
+
+  frontend:
+    build:
+      context: ../frontend
+      target: build
+    command: ["node", "node_modules/react-scripts/scripts/start.js"]
+    develop:
+      watch:
+        - action: sync
+          path: ../frontend/
+          target: /usr/src/app/
+    networks:
+      - client-side
+    ports:
+      - 3000:3000
+    depends_on:
+      - backend
+
+  db:
+    image: mysql:8
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=mysqlrootpass
+      - MYSQL_DATABASE=betldb
+    volumes:
+      - db-data:/var/lib/mysql
+    ports:
+      - 3306:3306
+    networks:
+      - server-side
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 4s
+      timeout: 10s
+      retries: 10
+
+networks:
+  client-side: {}
+  server-side: {}
+volumes:
+  db-data: {}
